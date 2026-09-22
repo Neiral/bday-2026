@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Parallel Universe</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #050506;
+            color: #f5f2ee;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            position: relative;
+        }
+
+        /* =========================
+           ATMOSPHERE
+        ========================= */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(
+                    circle at 50% 45%,
+                    rgba(105, 100, 130, 0.10),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 15% 85%,
+                    rgba(80, 100, 130, 0.06),
+                    transparent 30%
+                ),
+                #050506;
+        }
+
+        .orb {
+            position: absolute;
+            width: 45vw;
+            height: 45vw;
+            max-width: 650px;
+            max-height: 650px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.08;
+            background: #9b91c7;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: breathe 9s ease-in-out infinite;
+        }
+
+        .grain {
+            position: absolute;
+            inset: -50%;
+            opacity: 0.025;
+            background-image:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        @keyframes breathe {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0.06;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.08);
+                opacity: 0.11;
+            }
+        }
+
+        /* =========================
+           SCREENS
+        ========================= */
+
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            opacity: 0;
+            visibility: hidden;
+            transition:
+                opacity 1s ease,
+                visibility 1s ease;
+            z-index: 2;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* =========================
+           OPENING
+        ========================= */
+
+        .opening {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .title {
+            position: relative;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(3.4rem, 9vw, 9rem);
+            font-weight: 300;
+            letter-spacing: -0.055em;
+            line-height: 0.95;
+            user-select: none;
+            animation: titleFloat 6s ease-in-out infinite;
+        }
+
+        .title::before,
+        .title::after {
+            content: "PARALLEL UNIVERSE";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .title::before {
+            color: rgba(170, 145, 255, 0.5);
+            transform: translate(-2px, 0);
+            animation: glitchA 7s infinite;
+        }
+
+        .title::after {
+            color: rgba(120, 190, 255, 0.4);
+            transform: translate(2px, 0);
+            animation: glitchB 7s infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes glitchA {
+            0%, 88%, 100% {
+                opacity: 0;
+                clip-path: inset(0 0 100% 0);
+            }
+
+            89% {
+                opacity: 0.5;
+                clip-path: inset(20% 0 55% 0);
+            }
+
+            90% {
+                opacity: 0;
+            }
+
+            91% {
+                opacity: 0.4;
+                clip-path: inset(65% 0 12% 0);
+            }
+
+            92% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes glitchB {
+            0%, 89%, 100% {
+                opacity: 0;
+                clip-path: inset(100% 0 0 0);
+            }
+
+            90% {
+                opacity: 0.35;
+                clip-path: inset(55% 0 20% 0);
+            }
+
+            91% {
+                opacity: 0;
+            }
+
+            92% {
+                opacity: 0.3;
+                clip-path: inset(10% 0 70% 0);
+            }
+
+            93% {
+                opacity: 0;
+            }
+        }
+
+        .continue {
+            margin-top: 42px;
+            font-size: 0.72rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(245, 242, 238, 0.42);
+            animation: pulseText 2.8s ease-in-out infinite;
+            user-select: none;
+        }
+
+        .key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 70px;
+            height: 30px;
+            margin-right: 10px;
+            padding: 0 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        @keyframes pulseText {
+            0%, 100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+        }
+
+        /* =========================
+           NUMBER
+        ========================= */
+
+        .number-screen {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .number {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.6rem, 4vw, 3.6rem);
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            margin-left: 0.35em;
+            color: rgba(245, 242, 238, 0.9);
+            opacity: 0;
+            transform: translateY(15px);
+            transition:
+                opacity 1.5s ease,
+                transform 1.5s ease;
+        }
+
+        .number.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .universe-line {
+            margin-top: 34px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            color: rgba(245, 242, 238, 0.52);
+            opacity: 0;
+            transform: translateY(10px);
+            transition:
+                opacity 1.2s ease,
+                transform 1.2s ease;
+            transition-delay: 1.2s;
+        }
+
+        .universe-line.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================
+           STORY
+        ========================= */
+
+        .story-screen {
+            flex-direction: column;
+            text-align: center;
+            cursor: default;
+        }
+
+        .story-counter {
+            position: absolute;
+            top: 30px;
+            right: 35px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .story-content {
+            width: min(900px, 90vw);
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-text {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1.45rem, 3.2vw, 2.65rem);
+            font-weight: 300;
+            line-height: 1.35;
+            letter-spacing: -0.025em;
+            color: rgba(245, 242, 238, 0.88);
+            opacity: 0;
+            transform: translateY(20px);
+            filter: blur(5px);
+            transition:
+                opacity 0.9s ease,
+                transform 0.9s ease,
+                filter 0.9s ease;
+        }
+
+        .story-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .story-hint {
+            position: absolute;
+            bottom: 34px;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.22);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .story-hint.visible {
+            opacity: 1;
+        }
+
+        /* =========================
+           FINAL
+        ========================= */
+
+        .final-screen {
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .final-small {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            font-weight: 300;
+            line-height: 1.5;
+            color: rgba(245, 242, 238, 0.48);
+            opacity: 0;
+            transform: translateY(15px);
+            transition:
+                opacity 1.3s ease,
+                transform 1.3s ease;
+        }
+
+        .final-small.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .final-main {
+            max-width: 1000px;
+            margin-top: 30px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.2rem, 6vw, 5.8rem);
+            line-height: 1.05;
+            letter-spacing: -0.055em;
+            font-weight: 300;
+            color: #f5f2ee;
+            opacity: 0;
+            transform: translateY(25px);
+            filter: blur(8px);
+            transition:
+                opacity 1.6s ease,
+                transform 1.6s ease,
+                filter 1.6s ease;
+        }
+
+        .final-main.show {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .birthday {
+            margin-top: 45px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(1rem, 2vw, 1.35rem);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(245, 242, 238, 0.5);
+            opacity: 0;
+            transform: translateY(15px);
+            transition:
+                opacity 1.2s ease,
+                transform 1.2s ease;
+        }
+
+        .birthday.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .finish {
+            position: absolute;
+            bottom: 32px;
+            font-size: 0.6rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.16);
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .finish.show {
+            opacity: 1;
+        }
+
+        /* =========================
+           TRANSITION
+        ========================= */
+
+        .transition-flash {
+            position: fixed;
+            inset: 0;
+            background: #f5f2ee;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .transition-flash.flash {
+            animation: flash 1.3s ease forwards;
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 0;
+            }
+
+            25% {
+                opacity: 0.04;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .screen {
+                padding: 22px;
+            }
+
+            .title {
+                font-size: clamp(3rem, 16vw, 5rem);
+                line-height: 0.95;
+            }
+
+            .continue {
+                margin-top: 34px;
+                font-size: 0.6rem;
+            }
+
+            .key {
+                min-width: 58px;
+                height: 28px;
+                font-size: 0.55rem;
+            }
+
+            .number {
+                font-size: clamp(1.15rem, 6vw, 2rem);
+                letter-spacing: 0.2em;
+                margin-left: 0.2em;
+            }
+
+            .universe-line {
+                max-width: 300px;
+                line-height: 1.5;
+            }
+
+            .story-content {
+                width: 88vw;
+                min-height: 260px;
+            }
+
+            .story-text {
+                font-size: clamp(1.3rem, 6.5vw, 2rem);
+                line-height: 1.38;
+            }
+
+            .story-counter {
+                top: 22px;
+                right: 22px;
+            }
+
+            .story-hint {
+                bottom: 25px;
+            }
+
+            .final-main {
+                font-size: clamp(2rem, 10vw, 3.6rem);
+            }
+
+            .birthday {
+                margin-top: 35px;
+                font-size: 0.85rem;
+            }
+
+            .finish {
+                bottom: 25px;
+            }
+        }
+
+        /* =========================
+           REDUCED MOTION
+        ========================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background">
+        <div class="orb"></div>
+        <div class="grain"></div>
+    </div>
+
+    <!-- =========================
+         OPENING
+    ========================= -->
+
+    <section class="screen opening active" id="opening">
+
+        <h1 class="title">PARALLEL UNIVERSE</h1>
+
+        <div class="continue">
+            <span class="key">SPACE</span>
+            TO CONTINUE
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         NUMBER
+    ========================= -->
+
+    <section class="screen number-screen" id="numberScreen">
+
+        <div class="number" id="number">
+            8 2 8 6 9 3 8 2 5 8 4 9 3
+        </div>
+
+        <div class="universe-line" id="universeLine">
+            In this universe, everything is different.
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         STORY
+    ========================= -->
+
+    <section class="screen story-screen" id="storyScreen">
+
+        <div class="story-counter" id="storyCounter">
+            01 / 24
+        </div>
+
+        <div class="story-content">
+            <div class="story-text" id="storyText"></div>
+        </div>
+
+        <div class="story-hint" id="storyHint">
+            Press SPACE
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FINAL
+    ========================= -->
+
+    <section class="screen final-screen" id="finalScreen">
+
+        <div class="final-small" id="finalSmall">
+            But there is one universe I would choose every time.
+        </div>
+
+        <div class="final-main" id="finalMain">
+            The one we're actually living in.
+        </div>
+
+        <div class="birthday" id="birthday">
+            Happy Birthday
+        </div>
+
+        <div class="finish" id="finish">
+            Press SPACE to continue
+        </div>
+
+    </section>
+
+
+    <div class="transition-flash" id="transitionFlash"></div>
+
+
+    <script>
+        /* ==========================================
+           PAGE 11 — PARALLEL UNIVERSE
+        ========================================== */
+
+        const opening = document.getElementById("opening");
+        const numberScreen = document.getElementById("numberScreen");
+        const number = document.getElementById("number");
+        const universeLine = document.getElementById("universeLine");
+
+        const storyScreen = document.getElementById("storyScreen");
+        const storyText = document.getElementById("storyText");
+        const storyCounter = document.getElementById("storyCounter");
+        const storyHint = document.getElementById("storyHint");
+
+        const finalScreen = document.getElementById("finalScreen");
+        const finalSmall = document.getElementById("finalSmall");
+        const finalMain = document.getElementById("finalMain");
+        const birthday = document.getElementById("birthday");
+        const finish = document.getElementById("finish");
+
+        const transitionFlash = document.getElementById("transitionFlash");
+
+
+        /* ==========================================
+           STORY CONTENT
+        ========================================== */
+
+        const story = [
+
+            "In this universe, you were born in a different timeline.",
+
+            "I was born in another one.",
+
+            "We aren't even born in the same country.",
+
+            "Maybe you grew up somewhere where the sky looked completely different.",
+
+            "Maybe I spent my childhood learning a completely different language.",
+
+            "Maybe we went to completely different schools.",
+
+            "Maybe we never walked through the same corridor.",
+
+            "Maybe we never sat in the same classroom.",
+
+            "Maybe we never exchanged a single word.",
+
+            "Maybe you became someone completely different.",
+
+            "Maybe I did too.",
+
+            "In one universe, you become an astronaut.",
+
+            "In another, I somehow become a pianist.",
+
+            "In one, we meet when we're seven.",
+
+            "In another, we meet when we're forty-seven.",
+
+            "In one universe, rain falls upward.",
+
+            "In another, the moon is twice as close to Earth.",
+
+            "Somewhere, cats own houses and humans are the pets.",
+
+            "Somewhere, everyone wakes up with a different name every morning.",
+
+            "Somewhere, you live beside an ocean you've never seen in this universe.",
+
+            "Somewhere, I take a completely different road every single day.",
+
+            "Somewhere, we pass each other every day without ever knowing.",
+
+            "Somewhere, we meet immediately and somehow recognize each other.",
+
+            "And somewhere, out of all the possible universes, there is this one."
+
+        ];
+
+
+        /* ==========================================
+           STATE
+        ========================================== */
+
+        let state = 0;
+        let storyIndex = 0;
+        let storyAnimating = false;
+        let finalReady = false;
+
+
+        /* ==========================================
+           SCREEN HELPERS
+        ========================================== */
+
+        function hideScreen(screen) {
+            screen.classList.remove("active");
+        }
+
+        function showScreen(screen) {
+            screen.classList.add("active");
+        }
+
+
+        /* ==========================================
+           OPENING → NUMBER
+        ========================================== */
+
+        function startNumberSequence() {
+
+            hideScreen(opening);
+
+            setTimeout(() => {
+
+                showScreen(numberScreen);
+
+                setTimeout(() => {
+                    number.classList.add("show");
+                }, 250);
+
+                setTimeout(() => {
+                    universeLine.classList.add("show");
+                }, 1500);
+
+                setTimeout(() => {
+                    startStory();
+                }, 4100);
+
+            }, 700);
+        }
+
+
+        /* ==========================================
+           STORY START
+        ========================================== */
+
+        function startStory() {
+
+            hideScreen(numberScreen);
+
+            setTimeout(() => {
+
+                showScreen(storyScreen);
+
+                storyIndex = 0;
+
+                setTimeout(() => {
+                    showStoryText();
+                }, 700);
+
+            }, 700);
+        }
+
+
+        /* ==========================================
+           STORY TEXT
+        ========================================== */
+
+        function showStoryText() {
+
+            if (storyAnimating) return;
+
+            storyAnimating = true;
+
+            storyText.classList.remove("visible");
+
+            setTimeout(() => {
+
+                storyText.textContent = story[storyIndex];
+
+                const current = String(storyIndex + 1).padStart(2, "0");
+                const total = String(story.length).padStart(2, "0");
+
+                storyCounter.textContent =
+                    current + " / " + total;
+
+                storyText.classList.add("visible");
+
+                setTimeout(() => {
+
+                    storyAnimating = false;
+
+                    if (storyIndex === 0) {
+                        storyHint.classList.add("visible");
+                    }
+
+                }, 900);
+
+            }, 500);
+        }
+
+
+        /* ==========================================
+           NEXT STORY
+        ========================================== */
+
+        function nextStory() {
+
+            if (storyAnimating) return;
+
+            if (storyIndex < story.length - 1) {
+
+                storyIndex++;
+
+                showStoryText();
+
+            } else {
+
+                finishStory();
+
+            }
+        }
+
+
+        /* ==========================================
+           STORY → FINAL
+        ========================================== */
+
+        function finishStory() {
+
+            hideScreen(storyScreen);
+
+            setTimeout(() => {
+
+                showScreen(finalScreen);
+
+                setTimeout(() => {
+                    finalSmall.classList.add("show");
+                }, 500);
+
+                setTimeout(() => {
+                    finalMain.textContent =
+                        "The one we're actually living in.";
+
+                    finalMain.classList.add("show");
+                }, 2200);
+
+                setTimeout(() => {
+
+                    /*
+                     * Replace this line if you want a
+                     * longer custom final sentence.
+                     */
+                    finalMain.innerHTML =
+                        "In the real universe in which we live,<br>you are my universe.";
+
+                }, 3900);
+
+                setTimeout(() => {
+                    birthday.classList.add("show");
+                }, 5000);
+
+                setTimeout(() => {
+                    finish.classList.add("show");
+                    finalReady = true;
+                }, 6500);
+
+            }, 900);
+        }
+
+
+        /* ==========================================
+           FINAL → PAGE 21
+        ========================================== */
+
+        function goToGateway() {
+
+            if (!finalReady) return;
+
+            transitionFlash.classList.add("flash");
+
+            setTimeout(() => {
+
+                window.location.href =
+                    "page21.html?from=11";
+
+            }, 700);
+        }
+
+
+        /* ==========================================
+           KEYBOARD CONTROL
+        ========================================== */
+
+        document.addEventListener("keydown", (event) => {
+
+            if (event.code !== "Space") return;
+
+            event.preventDefault();
+
+            if (state === 0) {
+
+                state = 1;
+
+                startNumberSequence();
+
+                return;
+            }
+
+            if (state === 1) {
+
+                state = 2;
+
+                return;
+            }
+
+            if (state === 2) {
+
+                if (!storyScreen.classList.contains("active")) {
+                    return;
+                }
+
+                nextStory();
+
+                return;
+            }
+
+            if (state === 3) {
+
+                goToGateway();
+
+                return;
+            }
+
+        });
+
+
+        /* ==========================================
+           TOUCH / CLICK SUPPORT
+           
+           Clicking anywhere on the page acts as
+           pressing SPACE, making the experience
+           usable on phones/tablets as well.
+        ========================================== */
+
+        document.addEventListener("click", () => {
+
+            if (state === 0) {
+
+                state = 1;
+
+                startNumberSequence();
+
+                return;
+            }
+
+            if (state === 2 && storyScreen.classList.contains("active")) {
+
+                nextStory();
+
+                return;
+            }
+
+            if (state === 3) {
+
+                goToGateway();
+
+            }
+
+        });
+
+
+        /* ==========================================
+           FINAL STATE
+        ========================================== */
+
+        const finalObserver = new MutationObserver(() => {
+
+            if (
+                finalScreen.classList.contains("active") &&
+                finish.classList.contains("show")
+            ) {
+                state = 3;
+            }
+
+        });
+
+        finalObserver.observe(finalScreen, {
+            attributes: true,
+            attributeFilter: ["class"]
+        });
+
+
+        /* ==========================================
+           MOUSE PARALLAX
+        ========================================== */
+
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        document.addEventListener("mousemove", (event) => {
+
+            const x =
+                (event.clientX / window.innerWidth - 0.5);
+
+            const y =
+                (event.clientY / window.innerHeight - 0.5);
+
+            targetX = x;
+            targetY = y;
+
+        });
+
+
+        function parallaxLoop() {
+
+            currentX += (targetX - currentX) * 0.025;
+            currentY += (targetY - currentY) * 0.025;
+
+            const moveX = currentX * 18;
+            const moveY = currentY * 18;
+
+            document.querySelector(".orb").style.transform =
+                `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+
+            requestAnimationFrame(parallaxLoop);
+
+        }
+
+        parallaxLoop();
+
+
+        /* ==========================================
+           INITIALIZATION
+        ========================================= */
+
+        storyCounter.textContent =
+            "01 / " + String(story.length).padStart(2, "0");
+
+    </script>
+
+</body>
+</html>

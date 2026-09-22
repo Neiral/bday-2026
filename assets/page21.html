@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Coin</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background:
+                radial-gradient(
+                    circle at 50% 42%,
+                    rgba(255, 220, 160, 0.07),
+                    transparent 27%
+                ),
+                radial-gradient(
+                    circle at 50% 80%,
+                    rgba(255, 180, 90, 0.035),
+                    transparent 35%
+                ),
+                #080807;
+
+            color: #f3eee5;
+
+            font-family:
+                "Inter",
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* =========================================================
+           ATMOSPHERE
+        ========================================================= */
+
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            isolation: isolate;
+        }
+
+        .vignette {
+            position: absolute;
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    transparent 35%,
+                    rgba(0, 0, 0, 0.25) 70%,
+                    rgba(0, 0, 0, 0.72) 100%
+                );
+
+            z-index: 20;
+        }
+
+        .ambient-glow {
+            position: absolute;
+
+            width: 45vw;
+            height: 45vw;
+
+            min-width: 320px;
+            min-height: 320px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 215, 150, 0.055),
+                    rgba(255, 190, 100, 0.015) 42%,
+                    transparent 70%
+                );
+
+            filter: blur(15px);
+
+            opacity: 0.8;
+
+            pointer-events: none;
+
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%,
+            100% {
+                transform: scale(0.96);
+                opacity: 0.62;
+            }
+
+            50% {
+                transform: scale(1.04);
+                opacity: 0.9;
+            }
+        }
+
+        /* =========================================================
+           MAIN CONTENT
+        ========================================================= */
+
+        .content {
+            position: relative;
+
+            width: min(92vw, 760px);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            text-align: center;
+
+            z-index: 10;
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .eyebrow {
+            font-size: 10px;
+            letter-spacing: 0.42em;
+            text-transform: uppercase;
+
+            color: rgba(243, 238, 229, 0.42);
+
+            margin-bottom: 18px;
+
+            opacity: 0;
+            transform: translateY(12px);
+
+            animation: reveal 1s 0.15s forwards;
+        }
+
+        .title {
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size:
+                clamp(42px, 7vw, 78px);
+
+            font-weight: 400;
+
+            line-height: 0.95;
+
+            letter-spacing: -0.035em;
+
+            color: #f4eee3;
+
+            margin-bottom: 18px;
+
+            opacity: 0;
+            transform: translateY(20px);
+
+            animation: reveal 1s 0.3s forwards;
+        }
+
+        .subtitle {
+            max-width: 490px;
+
+            font-size:
+                clamp(13px, 1.7vw, 16px);
+
+            line-height: 1.7;
+
+            font-weight: 400;
+
+            color: rgba(243, 238, 229, 0.52);
+
+            margin-bottom: 48px;
+
+            opacity: 0;
+            transform: translateY(15px);
+
+            animation: reveal 1s 0.45s forwards;
+        }
+
+        @keyframes reveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================================
+           CHOICE
+        ========================================================= */
+
+        .choice-area {
+            width: 100%;
+
+            opacity: 0;
+            transform: translateY(18px);
+
+            animation: reveal 1s 0.6s forwards;
+        }
+
+        .choice-label {
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+
+            color: rgba(243, 238, 229, 0.3);
+
+            margin-bottom: 18px;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+
+            width: 100%;
+        }
+
+        .choice {
+            position: relative;
+
+            width: 170px;
+            height: 58px;
+
+            border: 1px solid rgba(243, 238, 229, 0.12);
+            border-radius: 100px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.045),
+                    rgba(255, 255, 255, 0.012)
+                );
+
+            color: rgba(243, 238, 229, 0.72);
+
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.35s ease,
+                background 0.35s ease,
+                color 0.35s ease,
+                box-shadow 0.35s ease;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .choice::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            border-radius: inherit;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(255, 220, 160, 0.1),
+                    transparent 65%
+                );
+
+            opacity: 0;
+
+            transition: opacity 0.35s ease;
+        }
+
+        .choice:hover {
+            transform: translateY(-3px);
+
+            border-color:
+                rgba(243, 238, 229, 0.27);
+
+            color: #fffaf0;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 255, 255, 0.07),
+                    rgba(255, 255, 255, 0.02)
+                );
+
+            box-shadow:
+                0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .choice:hover::before {
+            opacity: 1;
+        }
+
+        .choice:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .choice.selected {
+            border-color:
+                rgba(255, 215, 150, 0.45);
+
+            color: #fff5df;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 215, 150, 0.1),
+                    rgba(255, 215, 150, 0.025)
+                );
+
+            box-shadow:
+                0 0 35px rgba(255, 205, 130, 0.06);
+        }
+
+        /* =========================================================
+           COIN STAGE
+        ========================================================= */
+
+        .coin-stage {
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            inset: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            pointer-events: none;
+
+            opacity: 0;
+
+            z-index: 5;
+
+            transition: opacity 0.8s ease;
+        }
+
+        .coin-stage.active {
+            opacity: 1;
+        }
+
+        .coin-stage.hidden {
+            opacity: 0;
+        }
+
+        .coin-light {
+            position: absolute;
+
+            width: 250px;
+            height: 250px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 219, 150, 0.1),
+                    rgba(255, 205, 130, 0.025) 45%,
+                    transparent 70%
+                );
+
+            filter: blur(15px);
+
+            opacity: 0;
+
+            transition: opacity 1s ease;
+        }
+
+        .coin-stage.active .coin-light {
+            opacity: 1;
+        }
+
+        .coin-shadow {
+            position: absolute;
+
+            width: 170px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            background: rgba(0, 0, 0, 0.65);
+
+            filter: blur(18px);
+
+            transform:
+                translateY(135px)
+                scale(0.75);
+
+            opacity: 0;
+
+            transition: opacity 0.8s ease;
+        }
+
+        .coin-stage.active .coin-shadow {
+            opacity: 1;
+        }
+
+        /* =========================================================
+           3D COIN
+        ========================================================= */
+
+        .coin-camera {
+            position: relative;
+
+            width: 150px;
+            height: 150px;
+
+            perspective: 900px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .coin {
+            position: relative;
+
+            width: 132px;
+            height: 132px;
+
+            transform-style: preserve-3d;
+
+            will-change: transform;
+
+            opacity: 0;
+        }
+
+        .coin.show {
+            opacity: 1;
+        }
+
+        .coin-face {
+            position: absolute;
+
+            width: 132px;
+            height: 132px;
+
+            left: 0;
+            top: 0;
+
+            border-radius: 50%;
+
+            backface-visibility: hidden;
+
+            overflow: hidden;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                4px solid #b9823d;
+
+            background:
+                radial-gradient(
+                    circle at 35% 28%,
+                    #f7dca1 0%,
+                    #d9aa62 27%,
+                    #a96f31 58%,
+                    #75451d 100%
+                );
+
+            box-shadow:
+                inset 0 0 0 2px rgba(255, 238, 191, 0.3),
+                inset 0 0 18px rgba(72, 35, 10, 0.5),
+                0 7px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .coin-face::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 8px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255, 237, 184, 0.32);
+
+            box-shadow:
+                inset 0 0 0 1px rgba(100, 54, 16, 0.28);
+        }
+
+        .coin-face::after {
+            content: "";
+
+            position: absolute;
+
+            width: 55%;
+            height: 55%;
+
+            left: 9%;
+            top: 6%;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(255, 255, 255, 0.24),
+                    transparent 68%
+                );
+
+            transform: rotate(-25deg);
+
+            filter: blur(4px);
+        }
+
+        .heads {
+            transform: rotateY(0deg) translateZ(1px);
+        }
+
+        .tails {
+            transform: rotateY(180deg) translateZ(1px);
+        }
+
+        .coin-symbol {
+            position: relative;
+
+            z-index: 2;
+
+            width: 72px;
+            height: 72px;
+
+            border-radius: 50%;
+
+            border:
+                2px solid rgba(90, 47, 13, 0.42);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: rgba(91, 48, 13, 0.78);
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size: 38px;
+
+            font-weight: 700;
+
+            box-shadow:
+                inset 0 0 12px rgba(255, 235, 183, 0.2);
+        }
+
+        .tails .coin-symbol {
+            font-size: 31px;
+        }
+
+        /* =========================================================
+           COIN EDGE
+        ========================================================= */
+
+        .coin-edge {
+            position: absolute;
+
+            width: 132px;
+            height: 132px;
+
+            left: 0;
+            top: 0;
+
+            border-radius: 50%;
+
+            transform:
+                rotateY(90deg)
+                translateZ(2px);
+
+            border:
+                7px solid #8d5925;
+
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    #b47731 0px,
+                    #e1ae62 2px,
+                    #86501e 4px,
+                    #c98d46 6px
+                );
+
+            box-shadow:
+                inset 0 0 10px rgba(60, 30, 8, 0.55);
+        }
+
+        /* =========================================================
+           COIN ANIMATION
+        ========================================================= */
+
+        .coin.flip {
+            animation:
+                coinFlip 3.8s cubic-bezier(0.15, 0.7, 0.18, 1) forwards;
+        }
+
+        @keyframes coinFlip {
+
+            0% {
+                transform:
+                    translateY(100px)
+                    rotateX(0deg)
+                    rotateY(0deg)
+                    rotateZ(0deg)
+                    scale(0.7);
+            }
+
+            8% {
+                transform:
+                    translateY(65px)
+                    rotateX(90deg)
+                    rotateY(35deg)
+                    rotateZ(-8deg)
+                    scale(0.82);
+            }
+
+            20% {
+                transform:
+                    translateY(-80px)
+                    rotateX(540deg)
+                    rotateY(115deg)
+                    rotateZ(18deg)
+                    scale(0.92);
+            }
+
+            34% {
+                transform:
+                    translateY(-205px)
+                    rotateX(1050deg)
+                    rotateY(225deg)
+                    rotateZ(-25deg)
+                    scale(0.98);
+            }
+
+            48% {
+                transform:
+                    translateY(-245px)
+                    rotateX(1600deg)
+                    rotateY(380deg)
+                    rotateZ(20deg)
+                    scale(1.03);
+            }
+
+            62% {
+                transform:
+                    translateY(-180px)
+                    rotateX(2150deg)
+                    rotateY(545deg)
+                    rotateZ(-13deg)
+                    scale(1.01);
+            }
+
+            75% {
+                transform:
+                    translateY(-85px)
+                    rotateX(2670deg)
+                    rotateY(700deg)
+                    rotateZ(7deg)
+                    scale(1);
+            }
+
+            86% {
+                transform:
+                    translateY(-12px)
+                    rotateX(3060deg)
+                    rotateY(810deg)
+                    rotateZ(-3deg)
+                    scale(0.99);
+            }
+
+            94% {
+                transform:
+                    translateY(4px)
+                    rotateX(3300deg)
+                    rotateY(900deg)
+                    rotateZ(0deg)
+                    scale(0.98);
+            }
+
+            100% {
+                transform:
+                    translateY(0)
+                    rotateX(3420deg)
+                    rotateY(900deg)
+                    rotateZ(0deg)
+                    scale(1);
+            }
+        }
+
+        /* =========================================================
+           RESULT
+        ========================================================= */
+
+        .result {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, calc(-50% + 30px))
+                scale(0.96);
+
+            width: min(90vw, 600px);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            text-align: center;
+
+            z-index: 12;
+
+            opacity: 0;
+            pointer-events: none;
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .result.visible {
+            opacity: 1;
+            pointer-events: auto;
+
+            transform:
+                translate(-50%, -50%)
+                scale(1);
+        }
+
+        .result-small {
+            font-size: 10px;
+
+            letter-spacing: 0.38em;
+
+            text-transform: uppercase;
+
+            color: rgba(243, 238, 229, 0.35);
+
+            margin-bottom: 17px;
+        }
+
+        .result-main {
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size:
+                clamp(48px, 9vw, 88px);
+
+            font-weight: 400;
+
+            line-height: 0.9;
+
+            letter-spacing: -0.04em;
+
+            color: #f7f0e4;
+
+            margin-bottom: 20px;
+        }
+
+        .result-description {
+            max-width: 430px;
+
+            color: rgba(243, 238, 229, 0.52);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            margin-bottom: 34px;
+        }
+
+        .continue {
+            border: 1px solid rgba(243, 238, 229, 0.16);
+
+            background:
+                rgba(255, 255, 255, 0.035);
+
+            color: rgba(243, 238, 229, 0.8);
+
+            padding:
+                14px 25px;
+
+            border-radius: 100px;
+
+            font-size: 10px;
+
+            letter-spacing: 0.25em;
+
+            text-transform: uppercase;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.35s ease,
+                background 0.35s ease,
+                border-color 0.35s ease,
+                color 0.35s ease;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .continue:hover {
+            transform: translateY(-3px);
+
+            background:
+                rgba(255, 255, 255, 0.075);
+
+            border-color:
+                rgba(243, 238, 229, 0.3);
+
+            color: #fffaf0;
+        }
+
+        .continue:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* =========================================================
+           TRANSITION OVERLAY
+        ========================================================= */
+
+        .transition {
+            position: fixed;
+
+            inset: 0;
+
+            background: #050504;
+
+            z-index: 100;
+
+            pointer-events: none;
+
+            opacity: 1;
+
+            transition:
+                opacity 1s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .transition::after {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(255, 220, 160, 0.055),
+                    transparent 68%
+                );
+
+            filter: blur(20px);
+        }
+
+        .transition.open {
+            opacity: 0;
+        }
+
+        .transition.exit {
+            opacity: 1;
+        }
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 600px) {
+
+            .title {
+                font-size: clamp(44px, 14vw, 64px);
+            }
+
+            .subtitle {
+                max-width: 330px;
+
+                font-size: 13px;
+
+                margin-bottom: 40px;
+            }
+
+            .choices {
+                gap: 9px;
+            }
+
+            .choice {
+                width: 145px;
+                height: 54px;
+            }
+
+            .coin-camera {
+                transform: scale(0.88);
+            }
+
+            .result-description {
+                max-width: 310px;
+
+                font-size: 13px;
+            }
+        }
+
+        @media (max-height: 650px) {
+
+            .subtitle {
+                margin-bottom: 28px;
+            }
+
+            .eyebrow {
+                margin-bottom: 12px;
+            }
+
+            .title {
+                margin-bottom: 12px;
+            }
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="scene">
+
+    <div class="ambient-glow"></div>
+
+    <!-- INTRO / CHOICE -->
+    <main class="content" id="content">
+
+        <div class="eyebrow">
+            A small experiment
+        </div>
+
+        <h1 class="title">
+            The Coin
+        </h1>
+
+        <p class="subtitle">
+            Sometimes we try to predict what comes next.
+            Sometimes it's more interesting to leave room
+            for the unexpected.
+        </p>
+
+        <section class="choice-area">
+
+            <div class="choice-label">
+                Choose your side
+            </div>
+
+            <div class="choices">
+
+                <button
+                    class="choice"
+                    id="headsButton"
+                    type="button"
+                    data-choice="heads"
+                >
+                    Heads
+                </button>
+
+                <button
+                    class="choice"
+                    id="tailsButton"
+                    type="button"
+                    data-choice="tails"
+                >
+                    Tails
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- COIN -->
+    <div class="coin-stage" id="coinStage">
+
+        <div class="coin-light"></div>
+
+        <div class="coin-shadow"></div>
+
+        <div class="coin-camera">
+
+            <div class="coin" id="coin">
+
+                <div class="coin-face heads">
+
+                    <div class="coin-symbol">
+                        H
+                    </div>
+
+                </div>
+
+                <div class="coin-face tails">
+
+                    <div class="coin-symbol">
+                        T
+                    </div>
+
+                </div>
+
+                <div class="coin-edge"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT -->
+    <section class="result" id="result">
+
+        <div class="result-small" id="resultSmall">
+            The coin decided
+        </div>
+
+        <div class="result-main" id="resultMain">
+            Tails
+        </div>
+
+        <p class="result-description" id="resultDescription">
+            You chose heads.
+            The universe had other plans.
+        </p>
+
+        <button
+            class="continue"
+            id="continueButton"
+            type="button"
+        >
+            Continue
+        </button>
+
+    </section>
+
+
+    <div class="vignette"></div>
+
+    <div class="transition" id="transition"></div>
+
+</div>
+
+
+<script>
+
+    /* =========================================================
+       PAGE 21 — GATEWAY LOGIC
+    ========================================================= */
+
+    const params = new URLSearchParams(window.location.search);
+
+    /*
+        Example:
+
+        page21.html?from=1
+
+        Means:
+        Page 1 has just been completed.
+
+        Therefore Page 21 should eventually send
+        the user to Page 2.
+    */
+
+    const fromPage = parseInt(
+        params.get("from"),
+        10
+    );
+
+
+    /*
+        Main pages are named:
+
+        page1.html
+        page2.html
+        page3.html
+        ...
+        page20.html
+
+        Page 21 itself is:
+
+        page21.html
+    */
+
+    function getNextPage() {
+
+        if (
+            Number.isInteger(fromPage) &&
+            fromPage >= 1 &&
+            fromPage < 20
+        ) {
+            return "page" + (fromPage + 1) + ".html";
+        }
+
+        /*
+            Fallback.
+
+            If someone opens page21.html directly
+            without ?from=...
+
+            We start at Page 1.
+        */
+
+        return "page1.html";
+    }
+
+
+    const nextPage = getNextPage();
+
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const transition =
+        document.getElementById("transition");
+
+    const content =
+        document.getElementById("content");
+
+    const coinStage =
+        document.getElementById("coinStage");
+
+    const coin =
+        document.getElementById("coin");
+
+    const result =
+        document.getElementById("result");
+
+    const resultMain =
+        document.getElementById("resultMain");
+
+    const resultDescription =
+        document.getElementById("resultDescription");
+
+    const headsButton =
+        document.getElementById("headsButton");
+
+    const tailsButton =
+        document.getElementById("tailsButton");
+
+    const continueButton =
+        document.getElementById("continueButton");
+
+
+    /* =========================================================
+       PAGE ENTRY TRANSITION
+    ========================================================= */
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            /*
+                Start completely black.
+
+                Then reveal the gateway.
+
+                This makes every transition from another page
+                feel intentional instead of simply loading
+                another HTML file.
+            */
+
+            requestAnimationFrame(() => {
+
+                setTimeout(() => {
+
+                    transition.classList.add("open");
+
+                }, 120);
+
+            });
+
+        }
+    );
+
+
+    /* =========================================================
+       COIN STATE
+    ========================================================= */
+
+    let selectedChoice = null;
+
+    let flipping = false;
+
+
+    /* =========================================================
+       CHOOSE COIN
+    ========================================================= */
+
+    headsButton.addEventListener(
+        "click",
+        () => {
+
+            chooseCoin("heads");
+
+        }
+    );
+
+
+    tailsButton.addEventListener(
+        "click",
+        () => {
+
+            chooseCoin("tails");
+
+        }
+    );
+
+
+    function chooseCoin(choice) {
+
+        if (flipping) {
+            return;
+        }
+
+        selectedChoice = choice;
+
+        headsButton.classList.remove("selected");
+        tailsButton.classList.remove("selected");
+
+        if (choice === "heads") {
+
+            headsButton.classList.add("selected");
+
+        } else {
+
+            tailsButton.classList.add("selected");
+
+        }
+
+
+        /*
+            Small pause after selecting.
+
+            This gives the selection a physical feeling
+            before the whole scene changes.
+        */
+
+        setTimeout(
+            beginCoinFlip,
+            420
+        );
+    }
+
+
+    /* =========================================================
+       BEGIN COIN FLIP
+    ========================================================= */
+
+    function beginCoinFlip() {
+
+        if (!selectedChoice || flipping) {
+            return;
+        }
+
+        flipping = true;
+
+
+        /*
+            Fade the choice interface away.
+        */
+
+        content.style.opacity = "0";
+
+        content.style.transform =
+            "translateY(-15px) scale(0.98)";
+
+
+        setTimeout(() => {
+
+            content.style.display = "none";
+
+            coinStage.classList.add("active");
+
+            coin.classList.add("show");
+
+            /*
+                Force browser to register the initial state
+                before starting the animation.
+            */
+
+            void coin.offsetWidth;
+
+            coin.classList.add("flip");
+
+        }, 500);
+
+
+        /*
+            The CSS animation lasts 3.8 seconds.
+
+            Give the animation a little extra breathing room
+            before revealing the result.
+        */
+
+        setTimeout(
+            showResult,
+            4100
+        );
+    }
+
+
+    /* =========================================================
+       RESULT
+    ========================================================= */
+
+    function showResult() {
+
+        /*
+            IMPORTANT:
+
+            The result is ALWAYS the opposite of the
+            user's choice.
+
+            User chooses Heads -> result Tails
+            User chooses Tails -> result Heads
+        */
+
+        const resultValue =
+            selectedChoice === "heads"
+                ? "Tails"
+                : "Heads";
+
+
+        resultMain.textContent =
+            resultValue;
+
+
+        resultDescription.textContent =
+            selectedChoice === "heads"
+                ? "You chose heads. The universe had other plans."
+                : "You chose tails. The universe had other plans.";
+
+
+        /*
+            Let the coin settle visually first.
+        */
+
+        setTimeout(() => {
+
+            coinStage.classList.remove("active");
+
+            result.classList.add("visible");
+
+        }, 250);
+
+    }
+
+
+    /* =========================================================
+       CONTINUE
+    ========================================================= */
+
+    continueButton.addEventListener(
+        "click",
+        goToNextPage
+    );
+
+
+    function goToNextPage() {
+
+        if (!nextPage) {
+            return;
+        }
+
+
+        /*
+            Prevent double clicks.
+        */
+
+        continueButton.disabled = true;
+
+
+        /*
+            Fade the result away first.
+        */
+
+        result.style.opacity = "0";
+
+        result.style.transform =
+            "translate(-50%, calc(-50% - 15px)) scale(0.98)";
+
+
+        /*
+            Then close the entire screen.
+
+            The next page will load behind a black screen,
+            creating a seamless chapter-to-chapter transition.
+        */
+
+        setTimeout(() => {
+
+            transition.classList.remove("open");
+
+            transition.classList.add("exit");
+
+        }, 250);
+
+
+        setTimeout(() => {
+
+            window.location.href =
+                nextPage;
+
+        }, 1050);
+
+    }
+
+
+    /* =========================================================
+       KEYBOARD SUPPORT
+    ========================================================= */
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            /*
+                Don't interfere while the coin is flipping.
+            */
+
+            if (flipping) {
+                return;
+            }
+
+
+            /*
+                H = Heads
+                T = Tails
+            */
+
+            if (
+                event.key.toLowerCase() === "h"
+            ) {
+
+                chooseCoin("heads");
+
+            }
+
+            if (
+                event.key.toLowerCase() === "t"
+            ) {
+
+                chooseCoin("tails");
+
+            }
+
+
+            /*
+                Enter / Space can continue after result.
+            */
+
+            if (
+                result.classList.contains("visible") &&
+                (
+                    event.key === "Enter" ||
+                    event.key === " "
+                )
+            ) {
+
+                event.preventDefault();
+
+                goToNextPage();
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       TOUCH SAFETY
+    ========================================================= */
+
+    document.addEventListener(
+        "touchmove",
+        (event) => {
+
+            /*
+                Keep the experience fixed-screen.
+            */
+
+            if (
+                event.target.closest(".choice") ||
+                event.target.closest(".continue")
+            ) {
+                return;
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>Today Isn't Just Another Day</title>
+
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+            background: #050507;
+            color: #f5f1eb;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        button {
+            font: inherit;
+        }
+
+
+        /* =========================================================
+           MAIN EXPERIENCE
+        ========================================================= */
+
+        #experience {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            height: 100svh;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(
+                    circle at 50% 46%,
+                    rgba(137, 94, 61, 0.10) 0%,
+                    rgba(71, 52, 39, 0.045) 28%,
+                    transparent 64%
+                ),
+                #050507;
+        }
+
+
+        /* =========================================================
+           ATMOSPHERE
+        ========================================================= */
+
+        .atmosphere {
+            position: absolute;
+            inset: -20%;
+            z-index: -10;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .atmosphere::before,
+        .atmosphere::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.18;
+        }
+
+        .atmosphere::before {
+            width: 48vw;
+            height: 48vw;
+            min-width: 350px;
+            min-height: 350px;
+            left: 16%;
+            top: 17%;
+            background: rgba(166, 111, 70, 0.20);
+            animation: ambientOne 15s ease-in-out infinite alternate;
+        }
+
+        .atmosphere::after {
+            width: 40vw;
+            height: 40vw;
+            min-width: 300px;
+            min-height: 300px;
+            right: 7%;
+            bottom: 4%;
+            background: rgba(82, 73, 111, 0.13);
+            animation: ambientTwo 19s ease-in-out infinite alternate;
+        }
+
+        @keyframes ambientOne {
+            0% {
+                transform: translate3d(-3%, -2%, 0) scale(0.92);
+            }
+
+            100% {
+                transform: translate3d(7%, 5%, 0) scale(1.08);
+            }
+        }
+
+        @keyframes ambientTwo {
+            0% {
+                transform: translate3d(5%, 3%, 0) scale(1);
+            }
+
+            100% {
+                transform: translate3d(-8%, -5%, 0) scale(1.12);
+            }
+        }
+
+
+        /* =========================================================
+           GRAIN / FILM TEXTURE
+        ========================================================= */
+
+        .grain {
+            position: absolute;
+            inset: -50%;
+            z-index: 30;
+            pointer-events: none;
+            opacity: 0.045;
+            background-image:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+            animation: grainMove 0.35s steps(2) infinite;
+        }
+
+        @keyframes grainMove {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            25% {
+                transform: translate3d(2%, -1%, 0);
+            }
+
+            50% {
+                transform: translate3d(-1%, 2%, 0);
+            }
+
+            75% {
+                transform: translate3d(1%, 1%, 0);
+            }
+
+            100% {
+                transform: translate3d(-2%, -1%, 0);
+            }
+        }
+
+
+        /* =========================================================
+           VIGNETTE
+        ========================================================= */
+
+        .vignette {
+            position: absolute;
+            inset: 0;
+            z-index: 25;
+            pointer-events: none;
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    transparent 35%,
+                    rgba(0, 0, 0, 0.16) 66%,
+                    rgba(0, 0, 0, 0.70) 120%
+                );
+        }
+
+
+        /* =========================================================
+           MOVING LIGHT
+        ========================================================= */
+
+        .cursor-light {
+            position: absolute;
+            z-index: -4;
+            width: 360px;
+            height: 360px;
+            left: 50%;
+            top: 50%;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0.34;
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(201, 151, 103, 0.11) 0%,
+                    rgba(201, 151, 103, 0.045) 30%,
+                    transparent 72%
+                );
+            filter: blur(8px);
+            transition:
+                left 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                top 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+
+        /* =========================================================
+           PARTICLES
+        ========================================================= */
+
+        .particles {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            left: var(--x);
+            top: var(--y);
+            border-radius: 50%;
+            background: rgba(255, 238, 216, var(--opacity));
+            box-shadow:
+                0 0 8px rgba(255, 225, 195, 0.15);
+            animation:
+                particleFloat var(--duration) ease-in-out var(--delay) infinite alternate;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate3d(0, 0, 0);
+                opacity: var(--opacity);
+            }
+
+            50% {
+                opacity: calc(var(--opacity) * 0.35);
+            }
+
+            100% {
+                transform:
+                    translate3d(var(--moveX), var(--moveY), 0)
+                    scale(1.35);
+                opacity: calc(var(--opacity) * 0.75);
+            }
+        }
+
+
+        /* =========================================================
+           ORBITING DUST
+        ========================================================= */
+
+        .orbital-dust {
+            position: absolute;
+            width: 65vw;
+            height: 65vw;
+            max-width: 850px;
+            max-height: 850px;
+            min-width: 420px;
+            min-height: 420px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(255, 235, 211, 0.018);
+            border-radius: 50%;
+            z-index: -2;
+            pointer-events: none;
+            animation: slowOrbit 38s linear infinite;
+        }
+
+        .orbital-dust::before,
+        .orbital-dust::after {
+            content: "";
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(255, 231, 204, 0.28);
+            box-shadow:
+                0 0 12px rgba(255, 215, 179, 0.25);
+        }
+
+        .orbital-dust::before {
+            left: 14%;
+            top: 13%;
+        }
+
+        .orbital-dust::after {
+            right: 20%;
+            bottom: 7%;
+            width: 2px;
+            height: 2px;
+        }
+
+        @keyframes slowOrbit {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+
+        /* =========================================================
+           MAIN CONTENT
+        ========================================================= */
+
+        .content {
+            position: relative;
+            width: min(900px, 88vw);
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 0;
+            z-index: 10;
+            transform-style: preserve-3d;
+            transition:
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+
+        /* =========================================================
+           SECTIONS
+        ========================================================= */
+
+        .section {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            filter: blur(14px);
+            transition:
+                opacity 0.9s ease,
+                filter 1s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 1s;
+        }
+
+        .section.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            filter: blur(0);
+            transform: translateY(-50%);
+            transition:
+                opacity 1.1s ease,
+                filter 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s;
+        }
+
+        .section.exit {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            filter: blur(12px);
+            transform: translateY(calc(-50% - 18px));
+        }
+
+
+        /* =========================================================
+           INTRO
+        ========================================================= */
+
+        .intro-kicker {
+            display: block;
+            margin-bottom: 28px;
+            font-family:
+                "Courier New",
+                monospace;
+            font-size: 10px;
+            letter-spacing: 0.38em;
+            text-transform: uppercase;
+            color: rgba(238, 220, 201, 0.46);
+            opacity: 0;
+            transform: translateY(12px);
+            animation: kickerIn 1.5s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes kickerIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            position: relative;
+            display: inline-block;
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+            font-weight: 400;
+            font-size: clamp(42px, 6.4vw, 76px);
+            line-height: 1.04;
+            letter-spacing: -0.045em;
+            color: #f6f0e9;
+        }
+
+        .hero-line {
+            display: block;
+            overflow: hidden;
+        }
+
+        .hero-line span {
+            display: inline-block;
+            opacity: 0;
+            transform:
+                translateY(110%)
+                rotateX(12deg);
+            filter: blur(10px);
+        }
+
+        .section.active .hero-line:first-child span {
+            animation:
+                heroTextIn 1.35s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .section.active .hero-line:nth-child(2) span {
+            animation:
+                heroTextIn 1.35s 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes heroTextIn {
+            0% {
+                opacity: 0;
+                transform:
+                    translateY(110%)
+                    rotateX(12deg);
+                filter: blur(10px);
+            }
+
+            65% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    rotateX(0);
+                filter: blur(0);
+            }
+        }
+
+        .hero-title::after {
+            content: "";
+            position: absolute;
+            left: 25%;
+            right: 25%;
+            bottom: -30px;
+            height: 1px;
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(229, 190, 153, 0.22),
+                    transparent
+                );
+            transform: scaleX(0);
+            transform-origin: center;
+        }
+
+        .section.active .hero-title::after {
+            animation:
+                lineReveal 1.4s 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes lineReveal {
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+
+        /* =========================================================
+           PARAGRAPH SECTIONS
+        ========================================================= */
+
+        .story {
+            width: min(720px, 100%);
+            margin: 0 auto;
+        }
+
+        .story p {
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+            font-size: clamp(19px, 2.15vw, 26px);
+            line-height: 1.72;
+            letter-spacing: -0.012em;
+            color: rgba(245, 239, 231, 0.88);
+        }
+
+        .story p + p {
+            margin-top: 24px;
+        }
+
+        .story .soft {
+            color: rgba(245, 239, 231, 0.58);
+        }
+
+        .story .highlight {
+            color: #f4dfc9;
+        }
+
+        .story .chaos {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #fff4e9;
+        }
+
+        .story .pointer {
+            display: inline-block;
+            animation: pointerPulse 1.1s ease-in-out infinite;
+        }
+
+        @keyframes pointerPulse {
+            0%,
+            100% {
+                transform: translateX(0) scale(1);
+            }
+
+            50% {
+                transform: translateX(4px) scale(1.08);
+            }
+        }
+
+
+        /* =========================================================
+           TEXT REVEAL
+        ========================================================= */
+
+        .reveal-line {
+            opacity: 0;
+            transform: translateY(22px);
+            filter: blur(8px);
+        }
+
+        .section.active .reveal-line {
+            animation:
+                storyReveal 1s forwards cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .section.active .reveal-line:nth-child(1) {
+            animation-delay: 0.15s;
+        }
+
+        .section.active .reveal-line:nth-child(2) {
+            animation-delay: 0.38s;
+        }
+
+        .section.active .reveal-line:nth-child(3) {
+            animation-delay: 0.61s;
+        }
+
+        .section.active .reveal-line:nth-child(4) {
+            animation-delay: 0.84s;
+        }
+
+        @keyframes storyReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+
+        /* =========================================================
+           BELLY GIF MOMENT
+        ========================================================= */
+
+        .belly-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .belly-intro {
+            max-width: 690px;
+            margin-bottom: 28px;
+        }
+
+        .belly-frame {
+            position: relative;
+            width: min(390px, 70vw);
+            aspect-ratio: 1 / 0.72;
+            margin: 8px auto 30px;
+            border-radius: 22px;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.035),
+                    rgba(255,255,255,0.012)
+                );
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.42),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transform:
+                translateY(30px)
+                scale(0.92);
+            opacity: 0;
+        }
+
+        .section.active .belly-frame {
+            animation:
+                bellyReveal 1.1s 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes bellyReveal {
+            0% {
+                opacity: 0;
+                transform:
+                    translateY(30px)
+                    scale(0.92);
+            }
+
+            65% {
+                opacity: 1;
+                transform:
+                    translateY(-4px)
+                    scale(1.015);
+            }
+
+            100% {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+        .belly-frame::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                linear-gradient(
+                    120deg,
+                    transparent 15%,
+                    rgba(255,255,255,0.07) 50%,
+                    transparent 85%
+                );
+            transform: translateX(-120%);
+        }
+
+        .section.active .belly-frame::after {
+            animation:
+                glassSweep 1.5s 1s ease forwards;
+        }
+
+        @keyframes glassSweep {
+            to {
+                transform: translateX(120%);
+            }
+        }
+
+        .belly-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            color: rgba(245, 239, 231, 0.35);
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /*
+            WHEN YOU HAVE THE GIF:
+
+            Replace the .belly-placeholder element in HTML with:
+
+            <img
+                class="belly-gif"
+                src="assets/big-belly.gif"
+                alt="A funny childhood moment"
+            >
+        */
+
+        .belly-gif {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+
+        /* =========================================================
+           CHAOTIC BIRTHDAY SECTION
+        ========================================================= */
+
+        .birthday-chaos {
+            position: relative;
+        }
+
+        .birthday-chaos .reaction {
+            display: inline-block;
+            margin-top: 13px;
+            font-size: clamp(23px, 3vw, 34px);
+            letter-spacing: 0.04em;
+            opacity: 0;
+            transform: scale(0.7);
+        }
+
+        .section.active .birthday-chaos .reaction {
+            animation:
+                reactionPop 0.7s 1.25s cubic-bezier(0.16, 1.4, 0.3, 1) forwards;
+        }
+
+        @keyframes reactionPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        /* =========================================================
+           Y / Z VISUAL
+        ========================================================= */
+
+        .axis-demo {
+            position: relative;
+            width: min(460px, 76vw);
+            height: 180px;
+            margin: 30px auto 25px;
+        }
+
+        .axis-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(245, 225, 205, 0.35);
+            transform-origin: left center;
+        }
+
+        .axis-y {
+            width: 120px;
+            left: 50%;
+            top: 80%;
+            transform: translateX(-50%) rotate(-90deg);
+        }
+
+        .axis-z {
+            width: 220px;
+            left: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .axis-y::after,
+        .axis-z::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: -3px;
+            width: 6px;
+            height: 6px;
+            border-right: 1px solid rgba(245, 225, 205, 0.55);
+            border-top: 1px solid rgba(245, 225, 205, 0.55);
+            transform: rotate(45deg);
+        }
+
+        .axis-label {
+            position: absolute;
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: rgba(245, 225, 205, 0.42);
+        }
+
+        .axis-label-y {
+            left: calc(50% - 75px);
+            top: 2%;
+        }
+
+        .axis-label-z {
+            left: calc(50% + 110px);
+            top: calc(50% - 19px);
+        }
+
+        .axis-point {
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            left: 50%;
+            top: calc(50% - 4px);
+            border-radius: 50%;
+            background: #ead2b8;
+            box-shadow:
+                0 0 0 5px rgba(234, 210, 184, 0.05),
+                0 0 25px rgba(234, 210, 184, 0.28);
+            transform: translate(-50%, -50%);
+        }
+
+        .axis-y {
+            opacity: 0.3;
+            animation: yFade 2.5s 0.4s ease forwards;
+        }
+
+        .axis-z {
+            transform: translateY(-50%) scaleX(0);
+            animation: zGrow 1.6s 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes yFade {
+            to {
+                opacity: 0.08;
+            }
+        }
+
+        @keyframes zGrow {
+            to {
+                transform: translateY(-50%) scaleX(1);
+            }
+        }
+
+
+        /* =========================================================
+           FINAL STATEMENT
+        ========================================================= */
+
+        .final-small {
+            display: block;
+            margin-bottom: 25px;
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.36em;
+            color: rgba(245, 225, 205, 0.42);
+        }
+
+        .final-line {
+            display: block;
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+            font-size: clamp(29px, 4.4vw, 52px);
+            line-height: 1.25;
+            letter-spacing: -0.035em;
+            color: #f7eee5;
+        }
+
+        .final-line strong {
+            font-weight: 400;
+            color: #f0d1b1;
+        }
+
+        .final-section .final-small,
+        .final-section .final-line {
+            opacity: 0;
+            transform: translateY(25px);
+            filter: blur(8px);
+        }
+
+        .final-section.active .final-small {
+            animation:
+                finalReveal 1s 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .final-section.active .final-line {
+            animation:
+                finalReveal 1.2s 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes finalReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+
+        /* =========================================================
+           CONTINUE BUTTON
+        ========================================================= */
+
+        .continue-wrap {
+            position: fixed;
+            z-index: 40;
+            left: 50%;
+            bottom: 6.5vh;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+            transition:
+                opacity 0.7s ease,
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .continue-wrap.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .continue-button {
+            position: relative;
+            min-width: 142px;
+            height: 48px;
+            padding: 0 24px;
+            border: 1px solid rgba(255, 237, 217, 0.14);
+            border-radius: 999px;
+            background:
+                rgba(255, 246, 235, 0.035);
+            color: rgba(250, 241, 231, 0.78);
+            cursor: pointer;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            overflow: hidden;
+            transition:
+                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.4s ease,
+                background 0.4s ease,
+                color 0.4s ease;
+        }
+
+        .continue-button::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(
+                    110deg,
+                    transparent 20%,
+                    rgba(255, 255, 255, 0.08) 50%,
+                    transparent 80%
+                );
+            transform: translateX(-120%);
+            transition: transform 0.8s ease;
+        }
+
+        .continue-button:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 237, 217, 0.28);
+            background:
+                rgba(255, 246, 235, 0.06);
+            color: #fff7ef;
+        }
+
+        .continue-button:hover::before {
+            transform: translateX(120%);
+        }
+
+        .continue-button:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .continue-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .arrow {
+            font-size: 15px;
+            line-height: 1;
+            transition:
+                transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .continue-button:hover .arrow {
+            transform: translateX(5px);
+        }
+
+
+        /* =========================================================
+           PROGRESS INDICATOR
+        ========================================================= */
+
+        .progress {
+            position: fixed;
+            z-index: 40;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: progressIn 1s 1.6s ease forwards;
+        }
+
+        .progress-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255, 239, 220, 0.20);
+            transition:
+                transform 0.5s ease,
+                background 0.5s ease;
+        }
+
+        .progress-dot.active {
+            transform: scale(1.7);
+            background: rgba(255, 229, 200, 0.72);
+        }
+
+        @keyframes progressIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+
+        /* =========================================================
+           PAGE EXIT
+        ========================================================= */
+
+        .page-exit {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            background: #030304;
+            opacity: 0;
+            transition:
+                opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .page-exit.active {
+            opacity: 1;
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 600px) {
+
+            .atmosphere::before {
+                width: 90vw;
+                height: 90vw;
+                filter: blur(75px);
+            }
+
+            .atmosphere::after {
+                width: 70vw;
+                height: 70vw;
+                filter: blur(70px);
+            }
+
+            .cursor-light {
+                width: 280px;
+                height: 280px;
+            }
+
+            .content {
+                width: 87vw;
+                padding: 50px 0 100px;
+            }
+
+            .hero-title {
+                font-size: clamp(38px, 11vw, 58px);
+            }
+
+            .story p {
+                font-size: clamp(17px, 4.8vw, 22px);
+                line-height: 1.62;
+            }
+
+            .belly-frame {
+                width: min(340px, 76vw);
+                border-radius: 18px;
+            }
+
+            .continue-wrap {
+                bottom: 4.5vh;
+            }
+
+            .continue-button {
+                height: 46px;
+                min-width: 136px;
+            }
+
+            .progress {
+                top: 22px;
+            }
+
+            .axis-demo {
+                height: 145px;
+            }
+
+            .axis-z {
+                width: 175px;
+            }
+
+            .axis-label-z {
+                left: calc(50% + 87px);
+            }
+
+            .axis-y {
+                width: 95px;
+            }
+        }
+
+
+        /* =========================================================
+           VERY SMALL SCREENS
+        ========================================================= */
+
+        @media (max-height: 650px) {
+
+            .content {
+                padding-top: 30px;
+                padding-bottom: 85px;
+            }
+
+            .story p {
+                line-height: 1.48;
+            }
+
+            .story p + p {
+                margin-top: 14px;
+            }
+
+            .belly-frame {
+                width: min(300px, 58vw);
+                margin-bottom: 15px;
+            }
+
+            .continue-wrap {
+                bottom: 3vh;
+            }
+
+            .intro-kicker {
+                margin-bottom: 18px;
+            }
+
+            .hero-title {
+                font-size: clamp(34px, 7vw, 55px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main id="experience">
+
+        <!-- =====================================================
+             ATMOSPHERE
+        ====================================================== -->
+
+        <div class="atmosphere" id="atmosphere"></div>
+
+        <div class="cursor-light" id="cursorLight"></div>
+
+        <div class="particles" id="particles"></div>
+
+        <div class="orbital-dust"></div>
+
+        <div class="grain"></div>
+
+        <div class="vignette"></div>
+
+
+        <!-- =====================================================
+             PROGRESS
+        ====================================================== -->
+
+        <div class="progress" id="progress">
+            <span class="progress-dot active"></span>
+            <span class="progress-dot"></span>
+            <span class="progress-dot"></span>
+            <span class="progress-dot"></span>
+            <span class="progress-dot"></span>
+        </div>
+
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+
+        <div class="content" id="content">
+
+            <!-- =================================================
+                 SECTION 1 — OPENING
+            ================================================== -->
+
+            <section class="section active" data-section="0">
+
+                <span class="intro-kicker">
+                    before we begin
+                </span>
+
+                <h1 class="hero-title">
+                    <span class="hero-line">
+                        <span>Today is not just another day.</span>
+                    </span>
+
+                    <span class="hero-line">
+                        <span>It’s a day worth celebrating.</span>
+                    </span>
+                </h1>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 2 — OLD DAYS
+            ================================================== -->
+
+            <section class="section" data-section="1">
+
+                <div class="story">
+
+                    <p class="reveal-line">
+                        A few years ago, this was nothing more than
+                        an ordinary day to me.
+                    </p>
+
+                    <p class="reveal-line soft">
+                        Just another date on the calendar that came
+                        and went without meaning anything special.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 3 — GIF
+            ================================================== -->
+
+            <section class="section belly-section" data-section="2">
+
+                <div class="story belly-intro">
+
+                    <p class="reveal-line">
+                        I'd probably be sleeping my ahh off right now
+                        with my big belly there like this.
+                    </p>
+
+                </div>
+
+                <div class="belly-frame">
+
+
+
+                        <img
+                            class="belly-gif"
+                            src="fatgif.gif"
+                            alt="Funny big belly GIF"
+                        >
+
+                    <!--
+                        =================================================
+                        REPLACE THIS PLACEHOLDER WITH YOUR GIF
+                        =================================================
+
+                       
+                    -->
+
+                    <div class="belly-placeholder">
+                        BIG BELLY GIF GOES HERE
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 4 — MEANING
+            ================================================== -->
+
+            <section class="section" data-section="3">
+
+                <div class="story">
+
+                    <p class="reveal-line">
+                        And now, somehow, it has become one of the
+                        days I cherish the most.
+                    </p>
+
+                    <p class="reveal-line">
+                        Because this is the day that reminds me of
+                        what I have, of how lucky I am to have
+                        <span class="highlight">u in my life</span> —
+                        yes u
+                        <span class="chaos">DUMBOOO</span>
+                        <span class="pointer">😘</span>
+                    </p>
+
+                    <p class="reveal-line soft">
+                        It's a day I genuinely look forward to, a day
+                        that makes me happy, excited, and grateful in
+                        a way I can't really put into words.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 5 — BIRTHDAY CHAOS
+            ================================================== -->
+
+            <section class="section" data-section="4">
+
+                <div class="story birthday-chaos">
+
+                    <p class="reveal-line">
+                        Honestly, I think I get more excited for your
+                        birthday than I do for my own.
+                    </p>
+
+                    <p class="reveal-line soft">
+                        My bday is just like:
+                        <span class="chaos">"bruh m gettin older"</span>
+                    </p>
+
+                    <p class="reveal-line">
+                        Your bday is:
+                        <span class="chaos">
+                            "ohhhhhhhhhhhhh she's getting older"
+                        </span>
+                    </p>
+
+                    <span class="reaction">
+                        😋😋😋😋😋😋😋😋😋😋
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 6 — GROWTH
+            ================================================== -->
+
+            <section class="section" data-section="5">
+
+                <div class="story">
+
+                    <p class="reveal-line">
+                        And maybe that's what makes this day so special
+                        to me — not just that it's your birthday,
+                        but you're growing, getting bigger somehow
+                        than you already are.
+                    </p>
+
+                    <p class="reveal-line">
+                        You're already big enough, so let's chill
+                        a bit on growing in the
+                        <span class="chaos">Y axis</span>
+                        and rather grow on the
+                        <span class="highlight">Z axis</span>.
+                    </p>
+<!-- 
+                    <div class="axis-demo">
+
+                        <div class="axis-line axis-y"></div>
+                        <div class="axis-line axis-z"></div>
+
+                        <span class="axis-label axis-label-y">
+                            Y
+                        </span>
+
+                        <span class="axis-label axis-label-z">
+                            Z
+                        </span>
+
+                        <span class="axis-point"></span>
+
+                    </div> -->
+
+                    <span class="reaction">
+                        😋😋🍑🍑
+                    </span>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 SECTION 7 — FINAL
+            ================================================== -->
+
+            <section class="section final-section" data-section="6">
+
+                <div class="story">
+
+                    <span class="final-small">
+                        so, coming back to the point
+                    </span>
+
+                    <span class="final-line">
+                        today isn't just your birthday.
+                    </span>
+
+                    <span class="final-line">
+                        It's a day I'm
+                        <strong>genuinely grateful</strong>
+                        to have.
+                    </span>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONTINUE BUTTON
+        ====================================================== -->
+
+        <div class="continue-wrap" id="continueWrap">
+
+            <button
+                class="continue-button"
+                id="continueButton"
+                type="button"
+                aria-label="Continue"
+            >
+                <span class="continue-content">
+                    <span id="buttonText">Continue</span>
+                    <span class="arrow">→</span>
+                </span>
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PAGE EXIT
+        ====================================================== -->
+
+        <div class="page-exit" id="pageExit"></div>
+
+    </main>
+
+
+    <script>
+        /* =========================================================
+           PAGE 1 — EXPERIENCE CONTROLLER
+        ========================================================= */
+
+        (() => {
+
+            "use strict";
+
+
+            /* =====================================================
+               ELEMENTS
+            ====================================================== */
+
+            const experience = document.getElementById("experience");
+            const content = document.getElementById("content");
+            const atmosphere = document.getElementById("atmosphere");
+            const cursorLight = document.getElementById("cursorLight");
+            const particles = document.getElementById("particles");
+            const progress = document.getElementById("progress");
+            const progressDots = [...progress.querySelectorAll(".progress-dot")];
+            const continueWrap = document.getElementById("continueWrap");
+            const continueButton = document.getElementById("continueButton");
+            const buttonText = document.getElementById("buttonText");
+            const pageExit = document.getElementById("pageExit");
+
+            const sections = [
+                ...document.querySelectorAll(".section")
+            ];
+
+
+            /* =====================================================
+               STATE
+            ====================================================== */
+
+            let currentSection = 0;
+
+            let isTransitioning = false;
+
+            let introTimer = null;
+
+            let touchStartY = 0;
+
+            let touchStartX = 0;
+
+            let mouseX = window.innerWidth / 2;
+
+            let mouseY = window.innerHeight / 2;
+
+            let targetMouseX = mouseX;
+
+            let targetMouseY = mouseY;
+
+            let rafId = null;
+
+
+            /*
+                Section 0
+                    Opening
+
+                Section 1
+                    Paragraph
+
+                Section 2
+                    GIF
+
+                Section 3
+                    Meaning
+
+                Section 4
+                    Birthday chaos
+
+                Section 5
+                    Y / Z
+
+                Section 6
+                    Final statement
+            */
+
+
+            /* =====================================================
+               PARTICLE GENERATOR
+            ====================================================== */
+
+            function createParticles() {
+
+                const amount =
+                    window.innerWidth <= 600
+                        ? 32
+                        : 55;
+
+                const fragment =
+                    document.createDocumentFragment();
+
+                for (let i = 0; i < amount; i++) {
+
+                    const particle =
+                        document.createElement("span");
+
+                    particle.className = "particle";
+
+                    const size =
+                        (Math.random() * 2.2 + 0.8).toFixed(2);
+
+                    const x =
+                        (Math.random() * 100).toFixed(2) + "%";
+
+                    const y =
+                        (Math.random() * 100).toFixed(2) + "%";
+
+                    const opacity =
+                        (Math.random() * 0.42 + 0.08).toFixed(2);
+
+                    const duration =
+                        (Math.random() * 7 + 7).toFixed(2) + "s";
+
+                    const delay =
+                        -(Math.random() * 10).toFixed(2) + "s";
+
+                    const moveX =
+                        ((Math.random() - 0.5) * 80).toFixed(0) + "px";
+
+                    const moveY =
+                        ((Math.random() - 0.5) * 70).toFixed(0) + "px";
+
+                    particle.style.setProperty(
+                        "--size",
+                        `${size}px`
+                    );
+
+                    particle.style.setProperty(
+                        "--x",
+                        x
+                    );
+
+                    particle.style.setProperty(
+                        "--y",
+                        y
+                    );
+
+                    particle.style.setProperty(
+                        "--opacity",
+                        opacity
+                    );
+
+                    particle.style.setProperty(
+                        "--duration",
+                        duration
+                    );
+
+                    particle.style.setProperty(
+                        "--delay",
+                        delay
+                    );
+
+                    particle.style.setProperty(
+                        "--moveX",
+                        moveX
+                    );
+
+                    particle.style.setProperty(
+                        "--moveY",
+                        moveY
+                    );
+
+                    fragment.appendChild(particle);
+                }
+
+                particles.appendChild(fragment);
+            }
+
+
+            /* =====================================================
+               SECTION VISIBILITY
+            ====================================================== */
+
+            function updateProgress() {
+
+                progressDots.forEach((dot, index) => {
+
+                    dot.classList.toggle(
+                        "active",
+                        index === currentSection
+                    );
+
+                });
+
+            }
+
+
+            /* =====================================================
+               CONTINUE BUTTON VISIBILITY
+            ====================================================== */
+
+            function shouldShowButton() {
+
+                /*
+                    The first two sections are deliberately automatic.
+
+                    Section 2 = GIF
+                    Section 3 onward = user controlled.
+                */
+
+                if (currentSection === 2) {
+                    return true;
+                }
+
+                if (currentSection >= 3) {
+                    return true;
+                }
+
+                return false;
+            }
+
+
+            function updateButton() {
+
+                if (shouldShowButton()) {
+
+                    continueWrap.classList.add("visible");
+
+                } else {
+
+                    continueWrap.classList.remove("visible");
+
+                }
+
+
+                if (currentSection === 6) {
+
+                    buttonText.textContent = "Begin";
+
+                } else {
+
+                    buttonText.textContent = "Continue";
+
+                }
+
+            }
+
+
+            /* =====================================================
+               SECTION TRANSITION
+            ====================================================== */
+
+            function showSection(
+                nextIndex,
+                automatic = false
+            ) {
+
+                if (isTransitioning) {
+                    return;
+                }
+
+                if (
+                    nextIndex < 0 ||
+                    nextIndex >= sections.length
+                ) {
+                    return;
+                }
+
+                if (nextIndex === currentSection) {
+                    return;
+                }
+
+                isTransitioning = true;
+
+                const oldSection =
+                    sections[currentSection];
+
+                const newSection =
+                    sections[nextIndex];
+
+
+                oldSection.classList.remove("active");
+                oldSection.classList.add("exit");
+
+
+                setTimeout(() => {
+
+                    oldSection.classList.remove("exit");
+
+                    sections.forEach((section, index) => {
+
+                        if (index !== nextIndex) {
+                            section.classList.remove("active");
+                        }
+
+                    });
+
+                    newSection.classList.add("active");
+
+                    currentSection = nextIndex;
+
+                    updateProgress();
+
+                    updateButton();
+
+
+                    setTimeout(() => {
+
+                        isTransitioning = false;
+
+                    }, 900);
+
+                }, 420);
+
+            }
+
+
+            /* =====================================================
+               AUTOMATIC OPENING
+            ====================================================== */
+
+            function startOpeningSequence() {
+
+                /*
+                    Give the opening title time to breathe.
+
+                    The first Continue button intentionally does
+                    not appear immediately.
+                */
+
+                introTimer = setTimeout(() => {
+
+                    showSection(1, true);
+
+                }, 4300);
+
+            }
+
+
+            /* =====================================================
+               INITIALIZE
+            ====================================================== */
+
+            function initialize() {
+
+                createParticles();
+
+                updateProgress();
+
+                updateButton();
+
+                startOpeningSequence();
+
+                startParallax();
+
+            }
+
+
+            /* =====================================================
+               BUTTON LOGIC
+            ====================================================== */
+
+            continueButton.addEventListener(
+                "click",
+                () => {
+
+                    if (isTransitioning) {
+                        return;
+                    }
+
+
+                    /*
+                        Final section:
+                        go to Page 21.
+
+                        Page 21 receives from=1 so it knows
+                        that Page 1 was the page before it.
+                    */
+
+                    if (currentSection === 6) {
+
+                        goToPage21();
+
+                        return;
+
+                    }
+
+
+                    /*
+                        Normal sections:
+                        move forward.
+                    */
+
+                    showSection(
+                        currentSection + 1
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               PAGE 21 NAVIGATION
+            ====================================================== */
+
+            function goToPage21() {
+
+                if (isTransitioning) {
+                    return;
+                }
+
+                isTransitioning = true;
+
+                continueWrap.classList.remove("visible");
+
+                progress.style.opacity = "0";
+
+                content.style.transform =
+                    "translateY(-18px) scale(0.985)";
+
+                pageExit.classList.add("active");
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "page21.html?from=1";
+
+                }, 1200);
+
+            }
+
+
+            /* =====================================================
+               MOUSE PARALLAX
+            ====================================================== */
+
+            function startParallax() {
+
+                const prefersReducedMotion =
+                    window.matchMedia(
+                        "(prefers-reduced-motion: reduce)"
+                    ).matches;
+
+                if (prefersReducedMotion) {
+                    return;
+                }
+
+
+                function animate() {
+
+                    mouseX +=
+                        (targetMouseX - mouseX) * 0.035;
+
+                    mouseY +=
+                        (targetMouseY - mouseY) * 0.035;
+
+
+                    const normalizedX =
+                        (mouseX / window.innerWidth) - 0.5;
+
+                    const normalizedY =
+                        (mouseY / window.innerHeight) - 0.5;
+
+
+                    /*
+                        Extremely restrained movement.
+
+                        The page should feel like it has depth,
+                        not like the whole UI is following the cursor.
+                    */
+
+                    const contentX =
+                        normalizedX * 7;
+
+                    const contentY =
+                        normalizedY * 5;
+
+                    const atmosphereX =
+                        normalizedX * -14;
+
+                    const atmosphereY =
+                        normalizedY * -10;
+
+
+                    if (!isTransitioning) {
+
+                        content.style.transform =
+                            `translate3d(${contentX}px, ${contentY}px, 0)`;
+
+                        atmosphere.style.transform =
+                            `translate3d(${atmosphereX}px, ${atmosphereY}px, 0)`;
+
+                    }
+
+
+                    cursorLight.style.left =
+                        `${mouseX}px`;
+
+                    cursorLight.style.top =
+                        `${mouseY}px`;
+
+
+                    rafId =
+                        requestAnimationFrame(animate);
+
+                }
+
+                animate();
+
+            }
+
+
+            /* =====================================================
+               MOUSE EVENTS
+            ====================================================== */
+
+            window.addEventListener(
+                "mousemove",
+                (event) => {
+
+                    targetMouseX =
+                        event.clientX;
+
+                    targetMouseY =
+                        event.clientY;
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* =====================================================
+               WHEEL NAVIGATION
+            ====================================================== */
+
+            let wheelLocked = false;
+
+            window.addEventListener(
+                "wheel",
+                (event) => {
+
+                    if (isTransitioning) {
+                        return;
+                    }
+
+                    /*
+                        Don't make scrolling instantly fly through
+                        all the pages.
+
+                        One deliberate wheel movement = one section.
+                    */
+
+                    if (wheelLocked) {
+                        return;
+                    }
+
+                    const direction =
+                        event.deltaY > 0
+                            ? 1
+                            : -1;
+
+
+                    if (direction > 0) {
+
+                        if (
+                            currentSection === 0
+                        ) {
+
+                            showSection(1);
+
+                        } else if (
+                            currentSection < sections.length - 1
+                        ) {
+
+                            showSection(
+                                currentSection + 1
+                            );
+
+                        }
+
+                    } else {
+
+                        if (
+                            currentSection > 0
+                        ) {
+
+                            showSection(
+                                currentSection - 1
+                            );
+
+                        }
+
+                    }
+
+
+                    wheelLocked = true;
+
+                    setTimeout(() => {
+
+                        wheelLocked = false;
+
+                    }, 1100);
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* =====================================================
+               KEYBOARD NAVIGATION
+            ====================================================== */
+
+            window.addEventListener(
+                "keydown",
+                (event) => {
+
+                    if (isTransitioning) {
+                        return;
+                    }
+
+                    if (
+                        event.key === "ArrowRight" ||
+                        event.key === "ArrowDown" ||
+                        event.key === " "
+                    ) {
+
+                        event.preventDefault();
+
+
+                        if (
+                            currentSection <
+                            sections.length - 1
+                        ) {
+
+                            showSection(
+                                currentSection + 1
+                            );
+
+                        } else {
+
+                            goToPage21();
+
+                        }
+
+                    }
+
+
+                    if (
+                        event.key === "ArrowLeft" ||
+                        event.key === "ArrowUp"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        if (currentSection > 0) {
+
+                            showSection(
+                                currentSection - 1
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            /* =====================================================
+               TOUCH / SWIPE
+            ====================================================== */
+
+            window.addEventListener(
+                "touchstart",
+                (event) => {
+
+                    if (!event.touches.length) {
+                        return;
+                    }
+
+                    touchStartX =
+                        event.touches[0].clientX;
+
+                    touchStartY =
+                        event.touches[0].clientY;
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            window.addEventListener(
+                "touchend",
+                (event) => {
+
+                    if (!event.changedTouches.length) {
+                        return;
+                    }
+
+                    if (isTransitioning) {
+                        return;
+                    }
+
+                    const endX =
+                        event.changedTouches[0].clientX;
+
+                    const endY =
+                        event.changedTouches[0].clientY;
+
+
+                    const deltaX =
+                        endX - touchStartX;
+
+                    const deltaY =
+                        endY - touchStartY;
+
+
+                    /*
+                        Ignore tiny movements.
+                    */
+
+                    if (
+                        Math.abs(deltaY) < 45 &&
+                        Math.abs(deltaX) < 45
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                        Prefer vertical swipe if it is
+                        substantially stronger.
+                    */
+
+                    if (
+                        Math.abs(deltaY) >=
+                        Math.abs(deltaX)
+                    ) {
+
+                        if (deltaY < 0) {
+
+                            if (
+                                currentSection <
+                                sections.length - 1
+                            ) {
+
+                                showSection(
+                                    currentSection + 1
+                                );
+
+                            } else {
+
+                                goToPage21();
+
+                            }
+
+                        } else {
+
+                            if (
+                                currentSection > 0
+                            ) {
+
+                                showSection(
+                                    currentSection - 1
+                                );
+
+                            }
+
+                        }
+
+                    }
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* =====================================================
+               WINDOW RESIZE
+            ====================================================== */
+
+            window.addEventListener(
+                "resize",
+                () => {
+
+                    /*
+                        Nothing heavy is recalculated here.
+                        CSS handles the responsive layout.
+                    */
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* =====================================================
+               VISIBILITY CHANGE
+            ====================================================== */
+
+            document.addEventListener(
+                "visibilitychange",
+                () => {
+
+                    /*
+                        If the browser tab becomes hidden,
+                        animations remain CSS-controlled.
+                        No additional state is required.
+                    */
+
+                }
+            );
+
+
+            /* =====================================================
+               START
+            ====================================================== */
+
+            initialize();
+
+        })();
+    </script>
+
+</body>
+</html>

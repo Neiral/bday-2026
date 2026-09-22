@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ♡</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    body {
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at 50% 40%, rgba(130, 55, 85, 0.14), transparent 42%),
+            linear-gradient(145deg, #09080b, #110a0e 55%, #080709);
+        color: #f4e9ed;
+        font-family: Georgia, "Times New Roman", serif;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(255, 150, 180, 0.035), transparent 30%),
+            radial-gradient(circle at 80% 75%, rgba(190, 90, 130, 0.035), transparent 32%);
+    }
+
+    /* Floating hearts */
+    .hearts {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .heart {
+        position: absolute;
+        bottom: -40px;
+        color: rgba(255, 170, 195, 0.16);
+        font-size: var(--size);
+        animation: floatUp var(--duration) linear infinite;
+        animation-delay: var(--delay);
+        filter: blur(var(--blur));
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translate3d(0, 0, 0) rotate(0deg);
+            opacity: 0;
+        }
+
+        12% {
+            opacity: 1;
+        }
+
+        50% {
+            transform: translate3d(var(--drift), -50vh, 0) rotate(12deg);
+        }
+
+        88% {
+            opacity: 0.8;
+        }
+
+        100% {
+            transform: translate3d(calc(var(--drift) * -0.5), -115vh, 0) rotate(-10deg);
+            opacity: 0;
+        }
+    }
+
+    /* Opening screen */
+    .intro {
+        position: fixed;
+        inset: 0;
+        z-index: 5;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        padding: 30px;
+        text-align: center;
+
+        background:
+            radial-gradient(circle at 50% 45%, rgba(130, 55, 85, 0.13), transparent 45%),
+            rgba(8, 7, 9, 0.96);
+
+        transition:
+            opacity 1s ease,
+            visibility 1s ease;
+    }
+
+    .intro.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .intro-heart {
+        font-family: sans-serif;
+        font-size: 28px;
+        color: rgba(255, 185, 205, 0.75);
+        margin-bottom: 28px;
+        animation: softPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes softPulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.55;
+        }
+
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+    }
+
+    .intro-small {
+        font-family: sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 205, 218, 0.5);
+        margin-bottom: 18px;
+    }
+
+    .intro-title {
+        max-width: 650px;
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: normal;
+        line-height: 1.2;
+        color: #f8edf1;
+        margin-bottom: 18px;
+    }
+
+    .intro-description {
+        max-width: 560px;
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 1.8;
+        color: rgba(245, 228, 235, 0.62);
+        margin-bottom: 38px;
+    }
+
+    .warning {
+        color: rgba(255, 187, 205, 0.8);
+    }
+
+    .unlock {
+        border: 1px solid rgba(255, 190, 210, 0.3);
+        background: rgba(255, 180, 200, 0.07);
+        color: rgba(255, 225, 233, 0.9);
+
+        padding: 16px 30px;
+        border-radius: 100px;
+
+        font-family: sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 10px 40px rgba(0, 0, 0, 0.25),
+            inset 0 0 20px rgba(255, 180, 200, 0.025);
+
+        transition:
+            transform 0.3s ease,
+            background 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .unlock:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 180, 200, 0.12);
+        border-color: rgba(255, 200, 218, 0.55);
+    }
+
+    .unlock:active {
+        transform: translateY(-1px) scale(0.98);
+    }
+
+    /* Countdown */
+    .countdown {
+        position: fixed;
+        inset: 0;
+        z-index: 4;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(8, 7, 9, 0.97);
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition:
+            opacity 0.6s ease,
+            visibility 0.6s ease;
+    }
+
+    .countdown.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .countdown-content {
+        text-align: center;
+    }
+
+    .count-number {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(90px, 18vw, 170px);
+        line-height: 1;
+        font-weight: normal;
+        color: rgba(255, 215, 225, 0.9);
+
+        animation: countPop 1s ease forwards;
+    }
+
+    .count-message {
+        margin-top: 22px;
+
+        font-family: sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+
+        color: rgba(255, 205, 218, 0.55);
+    }
+
+    @keyframes countPop {
+        0% {
+            opacity: 0;
+            transform: scale(0.65);
+        }
+
+        25% {
+            opacity: 1;
+            transform: scale(1.08);
+        }
+
+        100% {
+            opacity: 0;
+            transform: scale(1);
+        }
+    }
+
+    /* Main content */
+    main {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        width: min(760px, 88%);
+        margin: auto;
+        padding: 12vh 0 9vh;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        opacity: 0;
+        transform: translateY(18px);
+        pointer-events: none;
+    }
+
+    main.visible {
+        pointer-events: auto;
+        animation: contentIn 1.4s ease forwards;
+    }
+
+    @keyframes contentIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .little-heart {
+        font-family: sans-serif;
+        font-size: 15px;
+        color: rgba(255, 180, 202, 0.65);
+        margin-bottom: 30px;
+        animation: softPulse 3s ease-in-out infinite;
+    }
+
+    .message {
+        font-size: clamp(17px, 2vw, 20px);
+        line-height: 1.9;
+        letter-spacing: 0.01em;
+        color: rgba(248, 237, 241, 0.88);
+        text-align: center;
+    }
+
+    .message p {
+        margin-bottom: 30px;
+    }
+
+    .message p:last-child {
+        margin-bottom: 0;
+    }
+
+    .continue {
+        margin-top: 55px;
+        border: 0;
+        background: none;
+        color: rgba(255, 205, 218, 0.7);
+
+        font-family: sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+
+        cursor: pointer;
+        padding: 12px 18px;
+
+        opacity: 0;
+        animation: continueIn 1.2s ease 1.5s forwards;
+
+        transition:
+            color 0.3s ease,
+            transform 0.3s ease;
+    }
+
+    .continue::after {
+        content: "";
+        display: block;
+        width: 0;
+        height: 1px;
+        margin: 7px auto 0;
+        background: rgba(255, 205, 218, 0.65);
+        transition: width 0.3s ease;
+    }
+
+    .continue:hover {
+        color: rgba(255, 225, 233, 0.95);
+        transform: translateY(-2px);
+    }
+
+    .continue:hover::after {
+        width: 100%;
+    }
+
+    @keyframes continueIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 600px) {
+        main {
+            width: 86%;
+            padding: 9vh 0 7vh;
+        }
+
+        .intro {
+            padding: 25px;
+        }
+
+        .intro-title {
+            font-size: 29px;
+        }
+
+        .intro-description {
+            font-size: 13px;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.82;
+        }
+
+        .message p {
+            margin-bottom: 26px;
+        }
+
+        .continue {
+            margin-top: 42px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .heart,
+        .intro-heart,
+        .count-number,
+        main,
+        .continue {
+            animation: none;
+        }
+
+        .continue {
+            opacity: 1;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="hearts" aria-hidden="true">
+    <span class="heart" style="left: 8%; --size: 14px; --duration: 17s; --delay: -4s; --drift: 35px; --blur: 0.4px;">♡</span>
+    <span class="heart" style="left: 19%; --size: 10px; --duration: 21s; --delay: -12s; --drift: -25px; --blur: 1px;">♥</span>
+    <span class="heart" style="left: 31%; --size: 17px; --duration: 19s; --delay: -8s; --drift: 45px; --blur: 0.8px;">♡</span>
+    <span class="heart" style="left: 44%; --size: 9px; --duration: 23s; --delay: -16s; --drift: -35px; --blur: 1px;">♥</span>
+    <span class="heart" style="left: 57%; --size: 15px; --duration: 18s; --delay: -6s; --drift: 28px; --blur: 0.5px;">♡</span>
+    <span class="heart" style="left: 69%; --size: 11px; --duration: 22s; --delay: -14s; --drift: -42px; --blur: 0.8px;">♥</span>
+    <span class="heart" style="left: 82%; --size: 18px; --duration: 20s; --delay: -10s; --drift: 32px; --blur: 1px;">♡</span>
+    <span class="heart" style="left: 93%; --size: 9px; --duration: 24s; --delay: -19s; --drift: -30px; --blur: 0.6px;">♥</span>
+</div>
+
+<!-- Opening -->
+<section class="intro" id="intro">
+
+    <div class="intro-heart">♡</div>
+
+    <div class="intro-small">
+        Okay... tiny warning
+    </div>
+
+    <h1 class="intro-title">
+        Something slightly embarrassing is about to happen.
+    </h1>
+
+    <p class="intro-description">
+        <span class="warning">⚠ Spoiler alert:</span>
+        this page contains an unnecessarily long paragraph written by
+        someone who apparently has <i>way too many feelings.</i>
+        <br><br>
+        Proceed at your own emotional risk.
+    </p>
+
+    <button class="unlock" onclick="startMessage()">
+        Unlock the paragraph ♡
+    </button>
+
+</section>
+
+<!-- Five second countdown -->
+<section class="countdown" id="countdown">
+
+    <div class="countdown-content">
+        <div class="count-number" id="countNumber">5</div>
+        <div class="count-message" id="countMessage">
+            Mentally prepare yourself.
+        </div>
+    </div>
+
+</section>
+
+<!-- Message -->
+<main id="main">
+
+    <div class="little-heart">♡</div>
+
+    <div class="message">
+
+        <p>
+            Happy birthday to the most special person in my life and honestly
+            I don't think I say it enough but I am so grateful to have you in
+            my life. You have made so many ordinary moments feel special just
+            by being there and I genuinely feel so lucky to have someone like
+            you beside me. I am so happy that I get to know you, love you,
+            annoy you and call you dumb on a regular basis because apparently
+            that's my way of showing affection and somehow you still haven't
+            gotten rid of me yet.
+        </p>
+
+        <p>
+            I love spending time with you and I love all the little moments we
+            share, even the completely random ones that probably wouldn't mean
+            anything to anyone else but somehow mean everything to me. I really
+            look forward to spending the next years of my life with you,
+            making memories, laughing at stupid things, annoying each other
+            and enjoying every single moment together.
+        </p>
+
+        <p>
+            I hope this year brings you everything that makes you smile and I
+            hope you always remember how loved and appreciated you are. You
+            deserve so much happiness and I hope I get to be there for as much
+            of it as possible.
+        </p>
+
+        <p>
+            Thank you for being you and for letting me be a part of your life.
+            I am genuinely so happy I have you and I can't wait for everything
+            that is still ahead of us.
+        </p>
+
+        <p>
+            Happy birthday, dumbo. I love you so much.
+        </p>
+
+    </div>
+
+    <button class="continue" onclick="continueToNext()">
+        Continue
+    </button>
+
+</main>
+
+<script>
+    const messages = [
+        "Mentally prepare yourself.",
+        "No, seriously.",
+        "This is getting emotional.",
+        "Too late to escape.",
+        "Good luck, dumbo ♡"
+    ];
+
+    function startMessage() {
+        const intro = document.getElementById("intro");
+        const countdown = document.getElementById("countdown");
+        const number = document.getElementById("countNumber");
+        const message = document.getElementById("countMessage");
+        const main = document.getElementById("main");
+
+        intro.classList.add("hidden");
+
+        setTimeout(() => {
+            countdown.classList.add("active");
+
+            let count = 5;
+
+            function runCountdown() {
+                number.style.animation = "none";
+                void number.offsetWidth;
+                number.style.animation = "countPop 1s ease forwards";
+
+                number.textContent = count;
+                message.textContent = messages[5 - count];
+
+                if (count === 0) {
+                    countdown.classList.remove("active");
+
+                    setTimeout(() => {
+                        main.classList.add("visible");
+                    }, 500);
+
+                    return;
+                }
+
+                count--;
+
+                setTimeout(runCountdown, 1000);
+            }
+
+            runCountdown();
+
+        }, 700);
+    }
+
+    function continueToNext() {
+        window.location.href = "page21.html?from=2";
+    }
+</script>
+
+</body>
+</html>
