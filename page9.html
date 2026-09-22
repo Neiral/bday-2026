@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>I hope u do well</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        background: #080706;
+        color: #f3eee7;
+        font-family: Georgia, "Times New Roman", serif;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+    }
+
+    /* -----------------------------------------
+       ATMOSPHERE
+    ----------------------------------------- */
+
+    .page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background:
+            radial-gradient(
+                circle at 50% 48%,
+                rgba(133, 91, 54, 0.12) 0%,
+                rgba(58, 40, 28, 0.055) 30%,
+                rgba(0, 0, 0, 0) 64%
+            ),
+            #080706;
+    }
+
+    .page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(
+                ellipse at center,
+                transparent 32%,
+                rgba(0, 0, 0, 0.46) 100%
+            );
+        z-index: 2;
+    }
+
+    /* Very subtle film grain */
+
+    .grain {
+        position: absolute;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        pointer-events: none;
+        z-index: 3;
+        opacity: 0.035;
+        background-image:
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+        animation: grainMove 0.25s steps(2) infinite;
+    }
+
+    @keyframes grainMove {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(-2%, 1%);
+        }
+
+        50% {
+            transform: translate(1%, -2%);
+        }
+
+        75% {
+            transform: translate(2%, 2%);
+        }
+
+        100% {
+            transform: translate(-1%, -1%);
+        }
+    }
+
+    /* -----------------------------------------
+       CONTENT
+    ----------------------------------------- */
+
+    .content {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 28px;
+        text-align: center;
+    }
+
+    .memory-wrap {
+        width: min(850px, 100%);
+        transform: translateY(0);
+    }
+
+    .memory {
+        margin: 0 auto;
+        max-width: 800px;
+        font-size: clamp(1.45rem, 3.2vw, 2.55rem);
+        line-height: 1.48;
+        font-weight: 400;
+        letter-spacing: -0.015em;
+        color: rgba(247, 239, 229, 0.96);
+
+        text-wrap: balance;
+
+        opacity: 0;
+        transform: translateY(16px);
+        filter: blur(5px);
+
+        transition:
+            opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+            transform 1100ms cubic-bezier(0.22, 1, 0.36, 1),
+            filter 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .memory.visible {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+
+    .memory.leaving {
+        opacity: 0;
+        transform: translateY(-12px);
+        filter: blur(5px);
+
+        transition:
+            opacity 550ms ease,
+            transform 650ms ease,
+            filter 650ms ease;
+    }
+
+    /* -----------------------------------------
+       INTRO
+    ----------------------------------------- */
+
+    .intro {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        padding: 40px 28px;
+        text-align: center;
+
+        opacity: 1;
+        visibility: visible;
+
+        transition:
+            opacity 1100ms ease,
+            visibility 1100ms ease;
+    }
+
+    .intro.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .intro-title {
+        font-size: clamp(2rem, 6vw, 4.3rem);
+        line-height: 1.12;
+        font-weight: 400;
+        letter-spacing: -0.035em;
+        color: #f7eee4;
+
+        opacity: 0;
+        transform: translateY(18px);
+        filter: blur(6px);
+
+        animation:
+            introIn
+            1500ms
+            cubic-bezier(0.22, 1, 0.36, 1)
+            300ms
+            forwards;
+    }
+
+    .intro-subtitle {
+        margin-top: 22px;
+
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+        font-size: 0.72rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+
+        color: rgba(220, 190, 160, 0.48);
+
+        opacity: 0;
+        transform: translateY(10px);
+
+        animation:
+            subtitleIn
+            1200ms
+            ease
+            1100ms
+            forwards;
+    }
+
+    .instruction {
+        position: absolute;
+        bottom: 38px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        white-space: nowrap;
+
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+        font-size: 0.63rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+
+        color: rgba(220, 190, 160, 0.36);
+
+        opacity: 0;
+
+        animation:
+            instructionIn
+            1200ms
+            ease
+            2200ms
+            forwards;
+
+        transition:
+            opacity 500ms ease,
+            color 500ms ease;
+    }
+
+    .instruction::before {
+        content: "";
+
+        display: inline-block;
+
+        width: 5px;
+        height: 5px;
+
+        margin-right: 11px;
+        vertical-align: 1px;
+
+        border-radius: 50%;
+
+        background: rgba(211, 163, 116, 0.46);
+
+        box-shadow:
+            0 0 14px rgba(211, 163, 116, 0.16);
+
+        animation:
+            breathe
+            2.2s
+            ease-in-out
+            infinite;
+    }
+
+    .instruction.hidden {
+        opacity: 0;
+    }
+
+    @keyframes introIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    }
+
+    @keyframes subtitleIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes instructionIn {
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes breathe {
+        0%,
+        100% {
+            opacity: 0.35;
+            transform: scale(0.8);
+        }
+
+        50% {
+            opacity: 0.8;
+            transform: scale(1);
+        }
+    }
+
+    /* -----------------------------------------
+       MEMORY PROGRESS
+    ----------------------------------------- */
+
+    .progress {
+        position: absolute;
+        top: 34px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        z-index: 7;
+
+        display: flex;
+        gap: 7px;
+
+        opacity: 0;
+
+        transition:
+            opacity 700ms ease;
+    }
+
+    .progress.visible {
+        opacity: 1;
+    }
+
+    .progress-dot {
+        width: 3px;
+        height: 3px;
+
+        border-radius: 50%;
+
+        background: rgba(226, 204, 183, 0.16);
+
+        transition:
+            background 500ms ease,
+            transform 500ms ease;
+    }
+
+    .progress-dot.active {
+        background: rgba(224, 181, 143, 0.72);
+        transform: scale(1.5);
+    }
+
+    /* -----------------------------------------
+       FINAL FADE
+    ----------------------------------------- */
+
+    .fadeout {
+        position: fixed;
+        inset: 0;
+
+        z-index: 100;
+
+        background: #000;
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition:
+            opacity 5.5s cubic-bezier(0.55, 0, 1, 1);
+    }
+
+    .fadeout.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    /* -----------------------------------------
+       RESPONSIVE
+    ----------------------------------------- */
+
+    @media (max-width: 600px) {
+
+        .content {
+            padding: 32px 24px;
+        }
+
+        .memory {
+            font-size: clamp(1.35rem, 6vw, 2rem);
+            line-height: 1.5;
+        }
+
+        .intro-title {
+            font-size: clamp(2.1rem, 11vw, 3.4rem);
+        }
+
+        .intro-subtitle {
+            max-width: 280px;
+            line-height: 1.7;
+        }
+
+        .instruction {
+            bottom: 28px;
+            font-size: 0.58rem;
+            letter-spacing: 0.17em;
+        }
+
+        .progress {
+            top: 25px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+
+
+</head>
+
+<body>
+<main class="page" id="page">
+
+    <div class="grain"></div>
+
+    <div class="intro" id="intro">
+
+        <h1 class="intro-title">
+            So as yk i really want u to grow in life
+        </h1>
+
+        <p class="intro-subtitle">
+            nd be a successful girl 
+        </p>
+
+        <div class="instruction" id="instruction">
+            These are my hopes for u
+        </div>
+
+    </div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="content">
+
+        <div class="memory-wrap">
+
+            <div class="memory" id="memory"></div>
+
+        </div>
+
+    </div>
+
+    <div class="fadeout" id="fadeout"></div>
+
+</main>
+
+
+<script>
+    /* =====================================================
+       PAGE 6 — MOMENTS
+
+       ADD / REMOVE / EDIT MOMENTS HERE.
+
+       Each string becomes one screen.
+
+       You can add your 100 moments below.
+
+       Example:
+
+       const memories = [
+           "The first moment.",
+           "The second moment.",
+           "The third moment."
+       ];
+
+       ===================================================== */
+
+
+    const memories = [
+        "I hope you stay mine forever (nonnegotiable btw)",  
+        "I hope you work hard for ur dreams",  
+        "I hope you stay confident and believe in yourself",  
+        "I hope you stay happy with me",  
+        "I hope you stay ambitious and work hard to achieve your goals",  
+        "I hope you always a good girl tht u r ",  
+        "I hope you continue to be caring and supportive tht you always are",  
+        "I hope you maintain your sense of humor and never lose tht beautifull smile of yours",  
+        "I hope you become someone who i look upto",  
+        "I hope you stay healthy and fit",  
+        "I hope you do well in life",  
+        "I hope you stay the pretty princess tht you are",  
+        "I hope you continue to be authentic and true to yourself",  
+        "I hope you make a positive difference in the world",  
+        "I hope you always remember how much you are loved and appreciated by me",
+        "And last but not the least",
+        "I REALLY REALLLY HOPE BADI HO RHI THODI AKAL AAI HO TERME AUR ISS SAAL THODA KAAM KALESH KRE AUR ZADA PYAAR KRE",
+        "Lets keep going theres still a long long way to go "
+
+    ];
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const intro = document.getElementById("intro");
+    const instruction = document.getElementById("instruction");
+    const memoryElement = document.getElementById("memory");
+    const progress = document.getElementById("progress");
+    const fadeout = document.getElementById("fadeout");
+
+
+    /* =====================================================
+       STATE
+       ===================================================== */
+
+    let currentIndex = -1;
+    let started = false;
+    let transitioning = false;
+    let finished = false;
+
+
+    /* =====================================================
+       SAFETY CHECK
+
+       Prevents the page from breaking if the memories
+       array is accidentally left empty.
+       ===================================================== */
+
+    if (!Array.isArray(memories) || memories.length === 0) {
+        memories.push("So why dont we talk bout things i love in u for a sec nd trust me youll get tired of readin i wont get tired of typing");
+    }
+
+
+    /* =====================================================
+       CREATE PROGRESS DOTS
+
+       Automatically matches however many moments
+       are inside the array.
+       ===================================================== */
+
+    memories.forEach(() => {
+
+        const dot = document.createElement("span");
+
+        dot.className = "progress-dot";
+
+        progress.appendChild(dot);
+    });
+
+    const progressDots = Array.from(
+        progress.querySelectorAll(".progress-dot")
+    );
+
+
+    /* =====================================================
+       SHOW MOMENT
+       ===================================================== */
+
+    function showMemory(index) {
+
+        if (finished || transitioning) {
+            return;
+        }
+
+        if (index < 0 || index >= memories.length) {
+            return;
+        }
+
+        transitioning = true;
+
+        const previousMemory = memoryElement;
+
+
+        /*
+         * If this isn't the first moment,
+         * let the previous sentence leave before
+         * replacing it.
+         */
+
+        if (currentIndex !== -1) {
+
+            previousMemory.classList.remove("visible");
+            previousMemory.classList.add("leaving");
+
+            setTimeout(() => {
+
+                memoryElement.textContent = memories[index];
+
+                memoryElement.classList.remove("leaving");
+
+                /*
+                 * Force the browser to recognize the
+                 * starting state before adding visible.
+                 */
+
+                void memoryElement.offsetWidth;
+
+                memoryElement.classList.add("visible");
+
+                updateProgress(index);
+
+                currentIndex = index;
+                transitioning = false;
+
+            }, 620);
+
+        } else {
+
+            memoryElement.textContent = memories[index];
+
+            /*
+             * Start from hidden state.
+             */
+
+            memoryElement.classList.remove("visible");
+            memoryElement.classList.remove("leaving");
+
+            void memoryElement.offsetWidth;
+
+            memoryElement.classList.add("visible");
+
+            updateProgress(index);
+
+            currentIndex = index;
+            transitioning = false;
+        }
+    }
+
+
+    /* =====================================================
+       UPDATE PROGRESS
+       ===================================================== */
+
+    function updateProgress(index) {
+
+        progressDots.forEach((dot, i) => {
+
+            dot.classList.toggle(
+                "active",
+                i === index
+            );
+
+        });
+    }
+
+
+    /* =====================================================
+       START EXPERIENCE
+       ===================================================== */
+
+    function startExperience() {
+
+        if (started || finished) {
+            return;
+        }
+
+        started = true;
+
+        intro.classList.add("hidden");
+        instruction.classList.add("hidden");
+
+        /*
+         * Give the intro time to fade before showing
+         * the first moment.
+         */
+
+        setTimeout(() => {
+
+            progress.classList.add("visible");
+
+            showMemory(0);
+
+        }, 700);
+    }
+
+
+    /* =====================================================
+       NEXT MOMENT
+       ===================================================== */
+
+    function nextMemory() {
+
+        if (finished) {
+            return;
+        }
+
+        /*
+         * First interaction starts the experience.
+         */
+
+        if (!started) {
+
+            startExperience();
+
+            return;
+        }
+
+        /*
+         * Ignore input while a sentence is transitioning.
+         */
+
+        if (transitioning) {
+            return;
+        }
+
+        /*
+         * If this was the final moment, finish.
+         */
+
+        if (currentIndex >= memories.length - 1) {
+
+            finishExperience();
+
+            return;
+        }
+
+        showMemory(currentIndex + 1);
+    }
+
+
+    /* =====================================================
+       FINAL FADE + REDIRECT
+       ===================================================== */
+
+    function finishExperience() {
+
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+        transitioning = true;
+
+        /*
+         * Hide progress first.
+         */
+
+        progress.classList.remove("visible");
+
+
+        /*
+         * Let the final moment breathe before
+         * the screen begins fading.
+         */
+
+        setTimeout(() => {
+
+            memoryElement.classList.remove("visible");
+            memoryElement.classList.add("leaving");
+
+
+            /*
+             * Start the long cinematic fade.
+             */
+
+            setTimeout(() => {
+
+                fadeout.classList.add("active");
+
+            }, 650);
+
+
+            /*
+             * The CSS fade lasts 5.5 seconds.
+             * Redirect after it has completed.
+             */
+
+            setTimeout(() => {
+
+                window.location.href = "page21.html?from=9";
+
+            }, 6150);
+
+        }, 900);
+    }
+
+
+    /* =====================================================
+       KEYBOARD INPUT
+       ===================================================== */
+
+    document.addEventListener("keydown", (event) => {
+
+        /*
+         * Spacebar controls the experience.
+         */
+
+        if (event.code === "Space") {
+
+            event.preventDefault();
+
+            nextMemory();
+        }
+
+
+        /*
+         * Enter also works as a convenient alternative.
+         */
+
+        if (event.code === "Enter") {
+
+            event.preventDefault();
+
+            nextMemory();
+        }
+
+    });
+
+
+    /* =====================================================
+       MOBILE / TOUCH INPUT
+       ===================================================== */
+
+    document.addEventListener(
+        "pointerup",
+        (event) => {
+
+            /*
+             * Ignore touches that happen from the mouse.
+             */
+
+            if (event.pointerType === "mouse") {
+                return;
+            }
+
+            nextMemory();
+
+        },
+        { passive: true }
+    );
+
+
+    /* =====================================================
+       MOUSE PARALLAX
+
+       Extremely subtle movement only.
+       It gives the otherwise minimal page a little depth
+       without distracting from the writing.
+       ===================================================== */
+
+    let targetX = 0;
+    let targetY = 0;
+
+    let currentX = 0;
+    let currentY = 0;
+
+
+    document.addEventListener("mousemove", (event) => {
+
+        const x =
+            (event.clientX / window.innerWidth) - 0.5;
+
+        const y =
+            (event.clientY / window.innerHeight) - 0.5;
+
+        targetX = x * 4;
+        targetY = y * 4;
+
+    });
+
+
+    function updateParallax() {
+
+        currentX +=
+            (targetX - currentX) * 0.035;
+
+        currentY +=
+            (targetY - currentY) * 0.035;
+
+
+        memoryElement.style.transform =
+            `translate3d(${currentX}px, ${currentY}px, 0)`;
+
+
+        requestAnimationFrame(updateParallax);
+    }
+
+
+    updateParallax();
+
+
+    /* =====================================================
+       PREVENT CONTEXT MENU
+
+       Keeps the experience clean on long press / right click.
+       ===================================================== */
+
+    document.addEventListener("contextmenu", (event) => {
+
+        event.preventDefault();
+
+    });
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    memoryElement.textContent = "";
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5d9d8">
+    <title>String Theory</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.65), transparent 32%),
+                radial-gradient(circle at 85% 75%, rgba(196, 91, 92, 0.12), transparent 35%),
+                linear-gradient(135deg, #f9e9e7 0%, #f4d9d8 48%, #eed0d1 100%);
+            color: #4c2528;
+            font-family: "DM Sans", sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at center, transparent 40%, rgba(85, 32, 35, 0.07) 100%);
+            z-index: 0;
+        }
+
+        .ambient {
+            position: fixed;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: 0;
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        .ambient.one {
+            top: -120px;
+            left: -100px;
+        }
+
+        .ambient.two {
+            right: -120px;
+            bottom: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            to {
+                transform: translate3d(35px, 25px, 0) scale(1.08);
+            }
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .screen {
+            width: min(900px, 100%);
+            min-height: 100vh;
+            padding: 60px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* ---------------- INITIAL SCREEN ---------------- */
+
+        #intro {
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(104, 48, 51, 0.58);
+            margin-bottom: 22px;
+            opacity: 0;
+            animation: rise 1s 0.15s forwards;
+        }
+
+        .title {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(76px, 13vw, 145px);
+            font-weight: 400;
+            line-height: 0.95;
+            color: #713438;
+            text-shadow: 0 12px 30px rgba(93, 35, 39, 0.10);
+            margin-bottom: 34px;
+            opacity: 0;
+            animation: titleIn 1.3s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .intro-text {
+            max-width: 650px;
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(20px, 3vw, 27px);
+            line-height: 1.5;
+            color: rgba(76, 37, 40, 0.78);
+            margin-bottom: 42px;
+            opacity: 0;
+            animation: rise 1s 0.55s forwards;
+        }
+
+        .intro-text em {
+            color: #713438;
+        }
+
+        .button {
+            border: 1px solid rgba(113, 52, 56, 0.25);
+            background: rgba(255, 255, 255, 0.32);
+            color: #633033;
+            font-family: "DM Sans", sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            padding: 15px 24px;
+            border-radius: 100px;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow:
+                0 10px 30px rgba(84, 35, 38, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.45);
+            transition:
+                transform 0.3s ease,
+                background 0.3s ease,
+                box-shadow 0.3s ease;
+            opacity: 0;
+            animation: rise 1s 0.8s forwards;
+        }
+
+        .button span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.52);
+            box-shadow:
+                0 15px 35px rgba(84, 35, 38, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .button:hover span {
+            transform: translateX(3px);
+        }
+
+        .button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* ---------------- STORY SCREEN ---------------- */
+
+        #story {
+            display: none;
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        #story.active {
+            display: flex;
+            animation: storyIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .story-label {
+            font-family: "Great Vibes", cursive;
+            font-size: clamp(42px, 7vw, 65px);
+            color: #713438;
+            margin-bottom: 35px;
+        }
+
+        .story-card {
+            width: min(760px, 100%);
+            padding: clamp(28px, 5vw, 52px);
+            border: 1px solid rgba(113, 52, 56, 0.10);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow:
+                0 20px 60px rgba(90, 35, 38, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            text-align: left;
+        }
+
+        .story-card p {
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(19px, 2.7vw, 24px);
+            line-height: 1.72;
+            color: rgba(67, 31, 34, 0.86);
+        }
+
+        .story-card p::first-letter {
+            font-size: 1.6em;
+            color: #713438;
+        }
+
+        .continue-wrap {
+            margin-top: 38px;
+        }
+
+        .continue-button {
+            opacity: 1;
+            animation: none;
+        }
+
+        /* ---------------- TRANSITION ---------------- */
+
+        body.leaving .page {
+            animation: pageOut 0.8s ease forwards;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes titleIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.97);
+                filter: blur(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes storyIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+        }
+
+        /* ---------------- MOBILE ---------------- */
+
+        @media (max-width: 600px) {
+            .screen {
+                padding: 40px 20px;
+            }
+
+            .eyebrow {
+                font-size: 9px;
+                letter-spacing: 0.22em;
+                margin-bottom: 18px;
+            }
+
+            .title {
+                font-size: clamp(70px, 22vw, 105px);
+                margin-bottom: 28px;
+            }
+
+            .intro-text {
+                font-size: 20px;
+                line-height: 1.48;
+                margin-bottom: 34px;
+            }
+
+            .button {
+                font-size: 12px;
+                padding: 14px 21px;
+            }
+
+            .story-label {
+                margin-bottom: 26px;
+            }
+
+            .story-card {
+                padding: 25px 22px;
+                border-radius: 20px;
+            }
+
+            .story-card p {
+                font-size: 19px;
+                line-height: 1.65;
+            }
+
+            .continue-wrap {
+                margin-top: 30px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient one"></div>
+    <div class="ambient two"></div>
+
+    <main class="page">
+
+        <!-- INTRO -->
+        <section class="screen" id="intro">
+
+            <div class="eyebrow">
+                perhaps some things are meant to connect
+            </div>
+
+            <h1 class="title">
+                String Theory
+            </h1>
+
+            <p class="intro-text">
+                Maybe it's not just about the universe being made of
+                invisible strings. Maybe it's about how things that seem
+                completely unrelated can still be <em>connected</em> in
+                ways we don't understand.
+            </p>
+
+            <button class="button" id="exploreButton">
+                <span>Let's explore the string theory&nbsp; →</span>
+            </button>
+
+        </section>
+
+
+        <!-- STORY -->
+        <section class="screen" id="story">
+
+            <div class="story-label">
+                Maybe this is ours.
+            </div>
+
+            <article class="story-card">
+
+                <p>
+                    Maybe string theory isn’t just about the universe being made of invisible strings connecting everything—it’s about how things that seem completely unrelated can still be connected in ways we don’t understand. And sometimes, when I think about us, I feel like that’s exactly what happened. Three, maybe three and a half years ago, we were already part of the same little universe. We walked through the same corridors, sat in the same classrooms, passed each other countless times, and yet somehow, we never spoke. You were just a girl a few benches ahead of me during an exam, and I remember seeing you and thinking you were really pretty. I had no idea that the person I was looking at for just a moment would eventually become someone so important to me. Looking back now, it almost feels like everything had been quietly falling into place long before we even knew it. Every corridor we walked through, every time we passed each other without saying a word, every moment that brought us closer without us realizing it—it all feels like it had a purpose. And then, when the timing was finally right, we started talking. Not too early, not too late. Just at the exact moment we were meant to find each other. And after that, everything seemed to happen so naturally, so perfectly, as if the universe had been patiently arranging the pieces all along and, finally, everything clicked into place. Maybe that's the most beautiful part of our story: we spent so much time unknowingly moving toward each other, and when we finally met, it felt less like the beginning of something and more like everything had finally fallen exactly where it was supposed to.
+                </p>
+
+            </article>
+
+            <div class="continue-wrap">
+                <button class="button continue-button" id="continueButton">
+                    <span>And maybe… everything clicked into place&nbsp; →</span>
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+        const intro = document.getElementById("intro");
+        const story = document.getElementById("story");
+        const exploreButton = document.getElementById("exploreButton");
+        const continueButton = document.getElementById("continueButton");
+
+        exploreButton.addEventListener("click", () => {
+            intro.style.opacity = "0";
+            intro.style.transform = "translateY(-20px)";
+
+            setTimeout(() => {
+                intro.style.display = "none";
+                story.classList.add("active");
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }, 750);
+        });
+
+        continueButton.addEventListener("click", () => {
+            document.body.classList.add("leaving");
+
+            setTimeout(() => {
+                window.location.href = "page21.html?from=5";
+            }, 750);
+        });
+    </script>
+
+</body>
+</html>
