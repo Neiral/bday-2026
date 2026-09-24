@@ -906,20 +906,32 @@
 
         @media (max-width: 600px) {
 
+            .content {
+                width: 88vw;
+            }
+
+            .eyebrow {
+                font-size: 9px;
+                letter-spacing: 0.34em;
+            }
+
             .title {
-                font-size: clamp(44px, 14vw, 64px);
+                font-size: clamp(42px, 13vw, 62px);
             }
 
             .subtitle {
                 max-width: 330px;
-
                 font-size: 13px;
+                margin-bottom: 38px;
+            }
 
-                margin-bottom: 40px;
+            .choice-label {
+                font-size: 9px;
+                letter-spacing: 0.25em;
             }
 
             .choices {
-                gap: 9px;
+                gap: 10px;
             }
 
             .choice {
@@ -928,12 +940,19 @@
             }
 
             .coin-camera {
-                transform: scale(0.88);
+                transform: scale(0.9);
+            }
+
+            .result {
+                width: 88vw;
+            }
+
+            .result-main {
+                font-size: clamp(50px, 16vw, 78px);
             }
 
             .result-description {
-                max-width: 310px;
-
+                max-width: 330px;
                 font-size: 13px;
             }
         }
@@ -944,18 +963,23 @@
                 margin-bottom: 28px;
             }
 
-            .eyebrow {
+            .choice-label {
                 margin-bottom: 12px;
             }
 
-            .title {
-                margin-bottom: 12px;
+            .coin-camera {
+                transform: scale(0.82);
             }
         }
 
         /* =========================================================
-           REDUCED MOTION
+           ACCESSIBILITY
         ========================================================= */
+
+        button:focus-visible {
+            outline: 1px solid rgba(255, 215, 150, 0.6);
+            outline-offset: 5px;
+        }
 
         @media (prefers-reduced-motion: reduce) {
 
@@ -972,583 +996,463 @@
 
 <body>
 
-<div class="scene">
+    <div class="scene">
 
-    <div class="ambient-glow"></div>
+        <div class="ambient-glow"></div>
 
-    <!-- INTRO / CHOICE -->
-    <main class="content" id="content">
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
 
-        <div class="eyebrow">
-            A small experiment
+        <main class="content" id="content">
+
+            <div class="eyebrow">
+                A little game of chance
+            </div>
+
+            <h1 class="title">
+                The Coin
+            </h1>
+
+            <p class="subtitle">
+                You already know what you want it to land on.
+                But once the coin is in the air, neither of us gets to decide.
+            </p>
+
+            <section class="choice-area">
+
+                <div class="choice-label">
+                    Choose your side
+                </div>
+
+                <div class="choices">
+
+                    <button
+                        class="choice"
+                        id="headsChoice"
+                        type="button"
+                        data-choice="heads"
+                    >
+                        Heads
+                    </button>
+
+                    <button
+                        class="choice"
+                        id="tailsChoice"
+                        type="button"
+                        data-choice="tails"
+                    >
+                        Tails
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- =====================================================
+             COIN STAGE
+        ====================================================== -->
+
+        <div class="coin-stage" id="coinStage">
+
+            <div class="coin-light"></div>
+
+            <div class="coin-shadow"></div>
+
+            <div class="coin-camera">
+
+                <div class="coin" id="coin">
+
+                    <div class="coin-face heads">
+                        <div class="coin-symbol">
+                            H
+                        </div>
+                    </div>
+
+                    <div class="coin-face tails">
+                        <div class="coin-symbol">
+                            T
+                        </div>
+                    </div>
+
+                    <div class="coin-edge"></div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <h1 class="title">
-            The Coin
-        </h1>
+        <!-- =====================================================
+             RESULT
+        ====================================================== -->
 
-        <p class="subtitle">
-            Sometimes we try to predict what comes next.
-            Sometimes it's more interesting to leave room
-            for the unexpected.
-        </p>
+        <section class="result" id="result">
 
-        <section class="choice-area">
-
-            <div class="choice-label">
-                Choose your side
+            <div class="result-small" id="resultSmall">
+                The coin decided
             </div>
 
-            <div class="choices">
-
-                <button
-                    class="choice"
-                    id="headsButton"
-                    type="button"
-                    data-choice="heads"
-                >
-                    Heads
-                </button>
-
-                <button
-                    class="choice"
-                    id="tailsButton"
-                    type="button"
-                    data-choice="tails"
-                >
-                    Tails
-                </button>
-
+            <div class="result-main" id="resultMain">
+                Heads
             </div>
+
+            <p class="result-description" id="resultDescription">
+                The universe had other plans.
+            </p>
+
+            <button
+                class="continue"
+                id="continueButton"
+                type="button"
+            >
+                Continue
+            </button>
 
         </section>
 
-    </main>
+        <div class="vignette"></div>
 
-
-    <!-- COIN -->
-    <div class="coin-stage" id="coinStage">
-
-        <div class="coin-light"></div>
-
-        <div class="coin-shadow"></div>
-
-        <div class="coin-camera">
-
-            <div class="coin" id="coin">
-
-                <div class="coin-face heads">
-
-                    <div class="coin-symbol">
-                        H
-                    </div>
-
-                </div>
-
-                <div class="coin-face tails">
-
-                    <div class="coin-symbol">
-                        T
-                    </div>
-
-                </div>
-
-                <div class="coin-edge"></div>
-
-            </div>
-
-        </div>
+        <div class="transition" id="transition"></div>
 
     </div>
 
+    <script>
+        /* =========================================================
+           ELEMENTS
+        ========================================================= */
 
-    <!-- RESULT -->
-    <section class="result" id="result">
+        const content = document.getElementById("content");
 
-        <div class="result-small" id="resultSmall">
-            The coin decided
-        </div>
+        const headsChoice = document.getElementById("headsChoice");
+        const tailsChoice = document.getElementById("tailsChoice");
 
-        <div class="result-main" id="resultMain">
-            Tails
-        </div>
+        const coinStage = document.getElementById("coinStage");
+        const coin = document.getElementById("coin");
 
-        <p class="result-description" id="resultDescription">
-            You chose heads.
-            The universe had other plans.
-        </p>
+        const result = document.getElementById("result");
+        const resultSmall = document.getElementById("resultSmall");
+        const resultMain = document.getElementById("resultMain");
+        const resultDescription = document.getElementById("resultDescription");
 
-        <button
-            class="continue"
-            id="continueButton"
-            type="button"
-        >
-            Continue
-        </button>
+        const continueButton = document.getElementById("continueButton");
 
-    </section>
+        const transition = document.getElementById("transition");
 
 
-    <div class="vignette"></div>
+        /* =========================================================
+           STATE
+        ========================================================= */
 
-    <div class="transition" id="transition"></div>
-
-</div>
-
-
-<script>
-
-    /* =========================================================
-       PAGE 21 — GATEWAY LOGIC
-    ========================================================= */
-
-    const params = new URLSearchParams(window.location.search);
-
-    /*
-        Example:
-
-        page21.html?from=1
-
-        Means:
-        Page 1 has just been completed.
-
-        Therefore Page 21 should eventually send
-        the user to Page 2.
-    */
-
-    const fromPage = parseInt(
-        params.get("from"),
-        10
-    );
+        let selectedChoice = null;
+        let resultChoice = null;
+        let flipping = false;
 
 
-    /*
-        Main pages are named:
+        /* =========================================================
+           PAGE LOAD
+        ========================================================= */
 
-        page1.html
-        page2.html
-        page3.html
-        ...
-        page20.html
-
-        Page 21 itself is:
-
-        page21.html
-    */
-
-    function getNextPage() {
-
-        if (
-            Number.isInteger(fromPage) &&
-            fromPage >= 1 &&
-            fromPage < 20
-        ) {
-            return "page" + (fromPage + 1) + ".html";
-        }
-
-        /*
-            Fallback.
-
-            If someone opens page21.html directly
-            without ?from=...
-
-            We start at Page 1.
-        */
-
-        return "page1.html";
-    }
-
-
-    const nextPage = getNextPage();
-
-
-    /* =========================================================
-       ELEMENTS
-    ========================================================= */
-
-    const transition =
-        document.getElementById("transition");
-
-    const content =
-        document.getElementById("content");
-
-    const coinStage =
-        document.getElementById("coinStage");
-
-    const coin =
-        document.getElementById("coin");
-
-    const result =
-        document.getElementById("result");
-
-    const resultMain =
-        document.getElementById("resultMain");
-
-    const resultDescription =
-        document.getElementById("resultDescription");
-
-    const headsButton =
-        document.getElementById("headsButton");
-
-    const tailsButton =
-        document.getElementById("tailsButton");
-
-    const continueButton =
-        document.getElementById("continueButton");
-
-
-    /* =========================================================
-       PAGE ENTRY TRANSITION
-    ========================================================= */
-
-    window.addEventListener(
-        "load",
-        () => {
-
-            /*
-                Start completely black.
-
-                Then reveal the gateway.
-
-                This makes every transition from another page
-                feel intentional instead of simply loading
-                another HTML file.
-            */
+        window.addEventListener("load", () => {
 
             requestAnimationFrame(() => {
-
-                setTimeout(() => {
-
-                    transition.classList.add("open");
-
-                }, 120);
-
+                transition.classList.add("open");
             });
 
-        }
-    );
+        });
 
 
-    /* =========================================================
-       COIN STATE
-    ========================================================= */
+        /* =========================================================
+           CHOICE SELECTION
+        ========================================================= */
 
-    let selectedChoice = null;
+        headsChoice.addEventListener("click", () => {
+            chooseSide("heads");
+        });
 
-    let flipping = false;
+        tailsChoice.addEventListener("click", () => {
+            chooseSide("tails");
+        });
 
 
-    /* =========================================================
-       CHOOSE COIN
-    ========================================================= */
-
-    headsButton.addEventListener(
-        "click",
-        () => {
-
-            chooseCoin("heads");
-
-        }
-    );
-
-
-    tailsButton.addEventListener(
-        "click",
-        () => {
-
-            chooseCoin("tails");
-
-        }
-    );
-
-
-    function chooseCoin(choice) {
-
-        if (flipping) {
-            return;
-        }
-
-        selectedChoice = choice;
-
-        headsButton.classList.remove("selected");
-        tailsButton.classList.remove("selected");
-
-        if (choice === "heads") {
-
-            headsButton.classList.add("selected");
-
-        } else {
-
-            tailsButton.classList.add("selected");
-
-        }
-
-
-        /*
-            Small pause after selecting.
-
-            This gives the selection a physical feeling
-            before the whole scene changes.
-        */
-
-        setTimeout(
-            beginCoinFlip,
-            420
-        );
-    }
-
-
-    /* =========================================================
-       BEGIN COIN FLIP
-    ========================================================= */
-
-    function beginCoinFlip() {
-
-        if (!selectedChoice || flipping) {
-            return;
-        }
-
-        flipping = true;
-
-
-        /*
-            Fade the choice interface away.
-        */
-
-        content.style.opacity = "0";
-
-        content.style.transform =
-            "translateY(-15px) scale(0.98)";
-
-
-        setTimeout(() => {
-
-            content.style.display = "none";
-
-            coinStage.classList.add("active");
-
-            coin.classList.add("show");
-
-            /*
-                Force browser to register the initial state
-                before starting the animation.
-            */
-
-            void coin.offsetWidth;
-
-            coin.classList.add("flip");
-
-        }, 500);
-
-
-        /*
-            The CSS animation lasts 3.8 seconds.
-
-            Give the animation a little extra breathing room
-            before revealing the result.
-        */
-
-        setTimeout(
-            showResult,
-            4100
-        );
-    }
-
-
-    /* =========================================================
-       RESULT
-    ========================================================= */
-
-    function showResult() {
-
-        /*
-            IMPORTANT:
-
-            The result is ALWAYS the opposite of the
-            user's choice.
-
-            User chooses Heads -> result Tails
-            User chooses Tails -> result Heads
-        */
-
-        const resultValue =
-            selectedChoice === "heads"
-                ? "Tails"
-                : "Heads";
-
-
-        resultMain.textContent =
-            resultValue;
-
-
-        resultDescription.textContent =
-            selectedChoice === "heads"
-                ? "You chose heads. The universe had other plans."
-                : "You chose tails. The universe had other plans.";
-
-
-        /*
-            Let the coin settle visually first.
-        */
-
-        setTimeout(() => {
-
-            coinStage.classList.remove("active");
-
-            result.classList.add("visible");
-
-        }, 250);
-
-    }
-
-
-    /* =========================================================
-       CONTINUE
-    ========================================================= */
-
-    continueButton.addEventListener(
-        "click",
-        goToNextPage
-    );
-
-
-    function goToNextPage() {
-
-        if (!nextPage) {
-            return;
-        }
-
-
-        /*
-            Prevent double clicks.
-        */
-
-        continueButton.disabled = true;
-
-
-        /*
-            Fade the result away first.
-        */
-
-        result.style.opacity = "0";
-
-        result.style.transform =
-            "translate(-50%, calc(-50% - 15px)) scale(0.98)";
-
-
-        /*
-            Then close the entire screen.
-
-            The next page will load behind a black screen,
-            creating a seamless chapter-to-chapter transition.
-        */
-
-        setTimeout(() => {
-
-            transition.classList.remove("open");
-
-            transition.classList.add("exit");
-
-        }, 250);
-
-
-        setTimeout(() => {
-
-            window.location.href =
-                nextPage;
-
-        }, 1050);
-
-    }
-
-
-    /* =========================================================
-       KEYBOARD SUPPORT
-    ========================================================= */
-
-    document.addEventListener(
-        "keydown",
-        (event) => {
-
-            /*
-                Don't interfere while the coin is flipping.
-            */
+        function chooseSide(choice) {
 
             if (flipping) {
                 return;
             }
 
+            selectedChoice = choice;
 
-            /*
-                H = Heads
-                T = Tails
-            */
+            headsChoice.classList.remove("selected");
+            tailsChoice.classList.remove("selected");
 
-            if (
-                event.key.toLowerCase() === "h"
-            ) {
-
-                chooseCoin("heads");
-
+            if (choice === "heads") {
+                headsChoice.classList.add("selected");
+            } else {
+                tailsChoice.classList.add("selected");
             }
 
-            if (
-                event.key.toLowerCase() === "t"
-            ) {
-
-                chooseCoin("tails");
-
-            }
-
-
-            /*
-                Enter / Space can continue after result.
-            */
-
-            if (
-                result.classList.contains("visible") &&
-                (
-                    event.key === "Enter" ||
-                    event.key === " "
-                )
-            ) {
-
-                event.preventDefault();
-
-                goToNextPage();
-
-            }
-
+            setTimeout(() => {
+                beginFlip();
+            }, 450);
         }
-    );
 
 
-    /* =========================================================
-       TOUCH SAFETY
-    ========================================================= */
+        /* =========================================================
+           COIN FLIP
+        ========================================================= */
 
-    document.addEventListener(
-        "touchmove",
-        (event) => {
+        function beginFlip() {
 
-            /*
-                Keep the experience fixed-screen.
-            */
-
-            if (
-                event.target.closest(".choice") ||
-                event.target.closest(".continue")
-            ) {
+            if (flipping) {
                 return;
             }
 
-        },
-        {
-            passive: true
-        }
-    );
+            flipping = true;
 
-</script>
+            /*
+             * =====================================================
+             * TRUE 50 / 50 RESULT
+             * =====================================================
+             *
+             * The user's choice has NO influence on the result.
+             *
+             * Math.random() produces a value from 0 (inclusive)
+             * up to 1 (exclusive).
+             *
+             * Below 0.5  -> Heads
+             * 0.5 or above -> Tails
+             *
+             * Therefore:
+             *
+             * Heads = 50%
+             * Tails = 50%
+             *
+             * =====================================================
+             */
+
+            resultChoice =
+                Math.random() < 0.5
+                    ? "heads"
+                    : "tails";
+
+
+            /* =====================================================
+               HIDE THE ORIGINAL CONTENT
+            ===================================================== */
+
+            content.style.opacity = "0";
+
+            content.style.transform =
+                "translateY(-20px) scale(0.98)";
+
+
+            /* =====================================================
+               ACTIVATE COIN STAGE
+            ===================================================== */
+
+            setTimeout(() => {
+
+                coinStage.classList.add("active");
+
+                coin.classList.add("show");
+
+                /*
+                 * Force browser to register the initial state
+                 * before restarting the animation.
+                 */
+
+                void coin.offsetWidth;
+
+                coin.classList.add("flip");
+
+            }, 500);
+
+
+            /* =====================================================
+               SHOW RESULT AFTER FLIP
+            ===================================================== */
+
+            setTimeout(() => {
+
+                showResult();
+
+            }, 4000);
+        }
+
+
+        /* =========================================================
+           RESULT
+        ========================================================= */
+
+        function showResult() {
+
+            coinStage.classList.remove("active");
+
+            coinStage.classList.add("hidden");
+
+
+            /*
+             * Give the coin stage a moment to fade before
+             * revealing the result.
+             */
+
+            setTimeout(() => {
+
+                resultMain.textContent =
+                    resultChoice === "heads"
+                        ? "Heads"
+                        : "Tails";
+
+
+                /*
+                 * User got what they chose.
+                 */
+
+                if (resultChoice === selectedChoice) {
+
+                    resultSmall.textContent =
+                        "The coin agreed";
+
+                    resultDescription.textContent =
+                        "Looks like chance was on your side.";
+
+                }
+
+                /*
+                 * User did NOT get what they chose.
+                 */
+
+                else {
+
+                    resultSmall.textContent =
+                        "The coin decided";
+
+                    resultDescription.textContent =
+                        "You chose one thing. Fate chose another.";
+
+                }
+
+
+                result.classList.add("visible");
+
+            }, 500);
+        }
+
+
+        /* =========================================================
+           CONTINUE
+        ========================================================= */
+
+        continueButton.addEventListener("click", () => {
+
+            if (transition.classList.contains("exit")) {
+                return;
+            }
+
+            transition.classList.add("exit");
+
+            setTimeout(() => {
+
+                /*
+                 * Page 21 gateway navigation.
+                 *
+                 * The page that opened this coin page is read
+                 * from the URL parameter "from".
+                 */
+
+                const params = new URLSearchParams(
+                    window.location.search
+                );
+
+                const from =
+                    parseInt(params.get("from"), 10);
+
+
+                /*
+                 * Page navigation:
+                 *
+                 * Page 1  -> Page 21 -> Page 2
+                 * Page 2  -> Page 21 -> Page 3
+                 * ...
+                 * Page 19 -> Page 21 -> Page 20
+                 *
+                 * Page 20 does not use this gateway.
+                 */
+
+                if (!Number.isNaN(from)) {
+
+                    const nextPage = from + 1;
+
+                    window.location.href =
+                        `page${nextPage}.html`;
+
+                } else {
+
+                    /*
+                     * Fallback if the page is opened directly.
+                     */
+
+                    window.location.href =
+                        "page2.html";
+                }
+
+            }, 1000);
+
+        });
+
+
+        /* =========================================================
+           PREVENT ACCIDENTAL DOUBLE ACTIVATION
+        ========================================================= */
+
+        window.addEventListener("keydown", (event) => {
+
+            if (
+                event.key === "Enter" &&
+                !flipping &&
+                selectedChoice
+            ) {
+
+                beginFlip();
+
+            }
+
+        });
+
+
+        /* =========================================================
+           RESET ANIMATION STATE IF PAGE IS REUSED
+        ========================================================= */
+
+        window.addEventListener("pageshow", () => {
+
+            if (
+                !window.location.hash &&
+                !flipping
+            ) {
+
+                coin.classList.remove("flip");
+                coin.classList.remove("show");
+
+                coinStage.classList.remove("active");
+                coinStage.classList.remove("hidden");
+
+                result.classList.remove("visible");
+
+                headsChoice.classList.remove("selected");
+                tailsChoice.classList.remove("selected");
+
+                selectedChoice = null;
+                resultChoice = null;
+                flipping = false;
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>
